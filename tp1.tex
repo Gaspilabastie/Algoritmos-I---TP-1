@@ -1,0 +1,166 @@
+\documentclass[10pt,a4paper]{article}
+
+\input{AEDmacros}
+\usepackage{caratula}
+\usepackage[spanish]{babel} 
+\usepackage{amsfonts} 
+
+\titulo{Trabajo prático 1: Especificación y WP}
+%\subtitulo{Subtítulo del tp}
+
+\fecha{\today}
+
+\materia{Algoritmos y Estructuras de Datos}
+\grupo{Grupo indeterminado}
+
+\integrante{Labastié, Gaspar}{660/23}{gaspilabastie@gmail.com}
+\integrante{Rugo, Julian}{1414/23}{julianrugo22@gmail.com}
+\integrante{Torres, Emiliano}{80/23}{emilianomtorres1@gmail.com}
+\integrante{Vanotti, Franco}{464/23}{fvanotti15@gmail.com}
+
+\graphicspath{{../static/}}
+
+\setcounter{section}{-1}
+
+\begin{document}
+
+\maketitle
+
+\section{Aclaraciones generales} 
+
+
+\begin{itemize}
+	\item Los índices de las listas recursos, cooperan, trayectorias, apuestas, pagos, eventos representa el identificador de los
+    individuos.
+	\item recursos: seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩ es la lista con el recurso de cada individuo.
+	\item cooperan: seq⟨Bool⟩ es la lista que indica T rue si el individuo en dicha posición coopera.
+	\item trayectorias: seq⟨seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩⟩ indica para cada individuo, en cada paso de tiempos, cuántos recursos ($%
+    \mathbb{R}
+    $%
+    ) cuenta.
+	\item eventos: seq⟨seq⟨$%
+    \mathbb{N}
+    $%
+    ⟩⟩ indica para cada individuo, en cada paso temporal, qué evento le ha tocado.
+	\item apuestas: seq⟨seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩⟩ indica para cada individuo, para cada evento posible (numerados desde 0), cuánto apostará.
+	\item pagos: seq⟨seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩⟩ indica para cada individuo, para cada evento, cuánto se pagará. Notar que a diferencia del ejemplo, estams resolviendo un caso más general donde el pago de cada evento puede diferir por individuo.
+	\item Las personas que no \textit{cooperan} no aportan nada al fondo monetario común.
+	\item Los \textit{recursos} iniciales son positivos.
+	\item Todos los \textit{pagos} son positivos.
+	\item Las \textit{apuestas} de los individuos representan la proporción de los recursos que los individuos invierten a cada una de los eventos posibles. Notar nuevamente que a diferencia del ejemplo, en este caso más general, podríamos tener apuestas distintas para cada evento por cada individuo.
+	\item Cada individuo apuesta siempre el mismo porcentaje por cada evento posible (es decir, el mismo número en cada paso temporal). Por ejemplo, si tenemos dos eventos; cara y ceca y apuesta 0, 4 por cara y 0,6 por seca, en cada paso temporal apostará esas proporciones.
+    
+\end{itemize}
+
+
+\section{Especificación} 
+
+\begin{enumerate}
+    \item \textbf{redistribucionDeLosFrutos}: Calcula los recursos que obtiene cada uno de los individuos luego de que se redistribuyen
+    los recursos del fondo monetario común en partes iguales. El fondo monetario común se compone de la suma de \textit{recursos} iniciales aportados por todas las personas que \textit{cooperan}. La salida es la lista de recursos que tendrá cada jugador.
+
+    \begin{proc}{redistribucionDeLosFrutos}{\In \textit{recursos} : 
+        seq⟨$%
+        \mathbb{R}
+        $%
+        ⟩
+    , \In \textit{cooperan} : \TLista{Bool}}
+    {
+        seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩
+    }
+        \requiere{|{\textit{recursos}}\vert > 0 \wedge |{\textit{cooperan}}\vert > 0
+        \wedge |{\textit{recursos}}\vert = |{\textit{cooperan}}\vert}
+
+
+        \asegura{|{\textit{res}}\vert = |{\textit{recursos}}\vert 
+        \yLuego 
+         nuevosRecursosCooperan (\textit{recursos}, \In \textit{cooperan}, \textit{res}) 
+         \wedge 
+        \\ nuevosRecursosNoCooperan (\textit{recursos}, \textit{cooperan}, \textit{res})}
+
+    \end{proc}
+
+
+    \pred{nuevosRecursosCooperan}{\textit{recursos} : 
+    seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩, \textit{cooperan} : \TLista{Bool}, 
+    \textit{res} : 
+    seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩}{\paraTodo[unalinea]{i}{\ent}
+    {0 \leq i < |{\textit{recursos}}\vert \land  \textit{cooperan}[i] = True \implicaLuego res[i] = fondoCom\acute{u}nRepartido}}
+    
+    \pred{nuevosRecursosNoCooperan}{\textit{recursos} : 
+    seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩, \textit{cooperan} : \TLista{Bool}, 
+    \textit{res} : 
+    seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩}{\paraTodo[unalinea]{i}{\ent}
+    {0 \leq i < |{\textit{recursos}}\vert \land  \textit{cooperan}[i] = False \implicaLuego res[i] = fondoCom\acute{u}nRepartido + \textit{recursos}[i]}}
+
+    \aux{fondoComúnnRepartido}{\textit{recursos} : 
+    seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩, \textit{cooperan} : \TLista{Bool}}{$%
+    \mathbb{R}
+    $%
+    }{\\(\sum_{n = 0}^{|{\textit{recursos}}\vert})  
+    (If \textit{cooperan}[i] = True \hspace{2mm}Then \hspace{2mm}\frac{\textit{recursos}[i]}{|{\textit{recursos}}\vert} \hspace{2mm} Else \hspace{2mm} 0)}
+
+    \item \textbf{trayectoriaDeLosFrutosIndividualesALargoPlazo}: Actualiza (In/Out) la lista de \textit{trayectorias} de los los recursos de cada uno de los individuos. Inicialmente, cada una de las trayectorias (listas de recursos) contiene un único elemento que representa los recursos iniciales del individuo. El procedimiento agrega a las \textit{trayectorias} los recursos que los individuos van obteniendo a medida que se van produciendo los resultados de los \textit{eventos} en función de la lista de \textit{pagos} que le ofrece la naturaleza (o casa de apuestas) a cada uno de los individuos, las \textit{apuestas} (o inversiones) que realizan los individuos en cada paso temporal, y la lista de individuos que \textit{cooperan} aportando al fondo monetario común.
+    
+    \begin{proc}{trayectoriaDeLosFrutosIndividualesALargoPlazo}{\Inout \textit{trayectorias}:
+        seq⟨seq⟨$%
+        \mathbb{R}
+        $%
+        ⟩⟩, \In \textit{cooperan} : \TLista{Bool}, \In \textit{apuestas}:
+        seq⟨seq⟨$%
+        \mathbb{R}
+        $%
+        ⟩⟩, \In \textit{pagos}:
+        seq⟨seq⟨$%
+        \mathbb{R}
+        $%
+        ⟩⟩, \In \textit{eventos}:
+        seq⟨seq⟨$%
+        \mathbb{N}
+        $%
+        ⟩⟩}
+    {
+        seq⟨seq⟨$%
+    \mathbb{R}
+    $%
+    ⟩⟩
+    }
+        \requiere{}
+
+        \asegura{}
+
+    \end{proc}
+
+
+\end{enumerate}
+\end{document}
