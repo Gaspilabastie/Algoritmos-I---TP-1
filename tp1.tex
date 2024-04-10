@@ -61,7 +61,10 @@
 	\item Todos los \textit{pagos} son positivos.
 	\item Las \textit{apuestas} de los individuos representan la proporción de los recursos que los individuos invierten a cada una de los eventos posibles. Notar nuevamente que a diferencia del ejemplo, en este caso más general, podríamos tener apuestas distintas para cada evento por cada individuo.
 	\item Cada individuo apuesta siempre el mismo porcentaje por cada evento posible (es decir, el mismo número en cada paso temporal). Por ejemplo, si tenemos dos eventos; cara y ceca y apuesta 0, 4 por cara y 0,6 por seca, en cada paso temporal apostará esas proporciones.
-    
+    \item Se considera al número 0 como parte de  $%
+    \mathbb{N}
+    $%
+    .
 \end{itemize}
 
 
@@ -84,17 +87,22 @@
     ⟩
     }
         \requiere{|{\textit{recursos}}\vert > 0 \wedge |{\textit{cooperan}}\vert > 0
-        \wedge |{\textit{recursos}}\vert = |{\textit{cooperan}}\vert}
+        \wedge |{\textit{recursos}}\vert = |{\textit{cooperan}}\vert
+        \yLuego \\ 
+        \paraTodo[unalinea]{i}{\ent}
+        {0 \leq i < |{\textit{recursos}}\vert \implicaLuego \textit{recursos}[i] \geq 0
+        }
+        }
 
 
         \asegura{|{\textit{res}}\vert = |{\textit{recursos}}\vert 
         \yLuego 
-         nuevosRecursosCooperan (\textit{recursos}, \In \textit{cooperan}, \textit{res}) 
+         nuevosRecursosCooperan (\textit{recursos}, \textit{cooperan}, \textit{res}) 
          \wedge 
         \\ nuevosRecursosNoCooperan (\textit{recursos}, \textit{cooperan}, \textit{res})}
 
     \end{proc}
-
+    
 
     \pred{nuevosRecursosCooperan}{\textit{recursos} : 
     seq⟨$%
@@ -106,7 +114,8 @@
     \mathbb{R}
     $%
     ⟩}{\paraTodo[unalinea]{i}{\ent}
-    {0 \leq i < |{\textit{recursos}}\vert \land  \textit{cooperan}[i] = True \implicaLuego res[i] = fondoCom\acute{u}nRepartido}}
+    {0 \leq i < |{\textit{recursos}}\vert \land  \textit{cooperan}[i] = True \implicaLuego res[i] = 
+    distribuci\acute{o}nFondoCom\acute{u}n(\textit{recursos}, \textit{cooperan})}}
     
     \pred{nuevosRecursosNoCooperan}{\textit{recursos} : 
     seq⟨$%
@@ -118,9 +127,10 @@
     \mathbb{R}
     $%
     ⟩}{\paraTodo[unalinea]{i}{\ent}
-    {0 \leq i < |{\textit{recursos}}\vert \land  \textit{cooperan}[i] = False \implicaLuego res[i] = fondoCom\acute{u}nRepartido + \textit{recursos}[i]}}
+    {0 \leq i < |{\textit{recursos}}\vert \land  \textit{cooperan}[i] = False \implicaLuego res[i] = 
+    distribuci\acute{o}nFondoCom\acute{u}n(\textit{recursos}, \textit{cooperan}) + \textit{recursos}[i]}}
 
-    \aux{fondoComúnnRepartido}{\textit{recursos} : 
+    \aux{distribuciónFondoComún}{\textit{recursos} : 
     seq⟨$%
     \mathbb{R}
     $%
@@ -149,12 +159,7 @@
         \mathbb{N}
         $%
         ⟩⟩}
-    {
-        seq⟨seq⟨$%
-    \mathbb{R}
-    $%
-    ⟩⟩
-    }
+    {}
         \requiere{}
 
         \asegura{}
