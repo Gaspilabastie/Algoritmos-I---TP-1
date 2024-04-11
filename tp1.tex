@@ -5,6 +5,7 @@
 \usepackage[spanish]{babel} 
 \usepackage{amsfonts} 
 
+
 \titulo{Trabajo prático 1: Especificación y WP}
 %\subtitulo{Subtítulo del tp}
 
@@ -75,12 +76,12 @@
 
     \pred{nuevosRecursosCooperan}{\textit{recursos} : seq⟨\real⟩, \textit{cooperan} : \TLista{Bool}, \textit{res} : seq⟨\real⟩} 
     {\paraTodo[unalinea]{i}{\ent}
-    {0 \leq i < |{\textit{recursos}}\vert \land  \textit{cooperan}[i] = True \implicaLuego res[i] = 
+    {0 \leq i < |{\textit{recursos}}\vert \y  \textit{cooperan}[i] = \True \implicaLuego res[i] = 
     distribuci\acute{o}nFondoCom\acute{u}n(\textit{recursos}, \textit{cooperan})}}
     
     \pred{nuevosRecursosNoCooperan}{\textit{recursos} : seq⟨\real⟩, \textit{cooperan} : \TLista{Bool}, \textit{res} : seq⟨\real⟩} 
     {\paraTodo[unalinea]{i}{\ent}
-    {0 \leq i < |{\textit{recursos}}\vert \land  \textit{cooperan}[i] = False \implicaLuego res[i] = 
+    {0 \leq i < |{\textit{recursos}}\vert \y  \textit{cooperan}[i] = \False \implicaLuego res[i] = 
     distribuci\acute{o}nFondoCom\acute{u}n(\textit{recursos}, \textit{cooperan}) + \textit{recursos}[i]}}
 
     \aux{distribuciónFondoComún}{\textit{recursos} : 
@@ -101,6 +102,36 @@
 
     \end{proc}
 
+    \item \textbf{trayectoriaExtrañaEscalera} Esta función devuelve \textit{True} e sii en la trayectoria de un individuo existe un único punto mayor a sus vecinos (llamado máximo local). Un elemento es máximo local si es mayor estricto que sus vecinos inmediatos.
+    
+    \begin{proc}{trayectoriaExtrañaEscalera}{\In \textit{trayectoria}: seq⟨\real⟩} {Bool}
+        \requiere{
+            |{\textit{trayectoria}}\vert > 0 \y 
+            {\paraTodo[unalinea]{i}{\ent}
+            {0 \leq i < |{\textit{trayectoria}}\vert \implicaLuego trayectoria[i] \geq 0}}
+        }
+
+        \asegura{
+            res \longleftrightarrow \True \implica |{\textit{trayectoria}}\vert = 1 \hspace{2mm} \oLuego \\ 
+            (\forall i : \ent) ((\exists m : \ent)
+            ((0 \leq i, m \leq |{\textit{trayectoria}}\vert \y i \neq m)
+            \implicaLuego \textit{trayectoria}[m] > \textit{trayectoria}[i])
+            \yLuego \\
+            (\forall n : \ent)(
+                0 \leq n \leq m \implicaLuego \textit{trayectoria}[i] > \textit{trayectoria}[i - 1])
+            \y \\
+            (\forall n : \ent)(
+                m \leq n < |{\textit{trayectoria}}\vert-1 \implicaLuego \textit{trayectoria}[i] > \textit{trayectoria}[i + 1])
+            )
+            }
+
+
+            
+            
+            
+            
+
+    \end{proc}
 
 \end{enumerate}
 \end{document}
