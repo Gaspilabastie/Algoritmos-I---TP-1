@@ -86,8 +86,8 @@
 
     \aux{distribuciónFondoComún}{\textit{recursos} : 
     seq⟨\real⟩, \textit{cooperan} : \TLista{Bool}}{\real}
-    {\\(\sum_{n = 0}^{|{\textit{recursos}}\vert})  
-    (If \textit{cooperan}[i] = True \hspace{2mm}Then \hspace{2mm}\frac{\textit{recursos}[i]}{|{\textit{recursos}}\vert} \hspace{2mm} Else \hspace{2mm} 0)}
+    {\\\sum_{i = 0}^{|{\textit{recursos}}\vert-1} 
+    (if \hspace{2mm} \textit{cooperan}[i] = \True \hspace{2mm} then \hspace{2mm} \frac{\textit{recursos}[i]}{|{\textit{recursos}}\vert} \hspace{2mm} else \hspace{2mm} 0 \hspace{2mm} fi)}
     
 
     \item \textbf{trayectoriaDeLosFrutosIndividualesALargoPlazo}: Actualiza (In/Out) la lista de \textit{trayectorias} de los los recursos de cada uno de los individuos. Inicialmente, cada una de las trayectorias (listas de recursos) contiene un único elemento que representa los recursos iniciales del individuo. El procedimiento agrega a las \textit{trayectorias} los recursos que los individuos van obteniendo a medida que se van produciendo los resultados de los \textit{eventos} en función de la lista de \textit{pagos} que le ofrece la naturaleza (o casa de apuestas) a cada uno de los individuos, las \textit{apuestas} (o inversiones) que realizan los individuos en cada paso temporal, y la lista de individuos que \textit{cooperan} aportando al fondo monetario común.
@@ -96,11 +96,39 @@
         seq⟨seq⟨\real⟩⟩, \In \textit{cooperan} : \TLista{Bool}, \In \textit{apuestas}: seq⟨seq⟨\real⟩⟩, \In \textit{pagos}: seq⟨seq⟨\real⟩⟩, 
         \In \textit{eventos}: seq⟨seq⟨\nat}
     {}
-        \requiere{}
+        \requiere{
+            |{\textit{trayectorias}}\vert = |{\textit{cooperan}}\vert = |{\textit{apuestas}}\vert = |{\textit{pagos}}\vert = |{\textit{eventos}}\vert \yLuego \\
+            (\forall i : \ent) (0 \leq i <|{\textit{trayectorias}}\vert \implicaLuego (
+                |{\textit{trayectorias}[i]}\vert =  1 \y \textit{trayectorias}[i][0] \geq  0
+            )) \y \\
+            (\forall k, l : \ent)(0 \leq k, l < |{\textit{apuestas}}\vert \implicaLuego |{\textit{apuestas}[k]}\vert = |{\textit{apuestas}[l]}\vert) \y \\
+            (\forall i : \ent) ((0 \leq i < |{\textit{apuestas}}\vert \implicaLuego sumarApuestasIndividuo(\textit{apuestas}[i]) =1) \yLuego \\
+            (\forall j : \ent) (0 \leq j < |{\textit{apuestas}[i]}\vert \implicaLuego 0 \leq \textit{apuestas}[i][j] \leq 1)) \y \\
+            (\forall k, l : \ent)(0 \leq k, l < |{\textit{pagos}}\vert \implicaLuego |{\textit{pagos}[k]}\vert = |{\textit{pagos}[l]}\vert) \y \\
+            (\forall i : \ent) (0 \leq i < |{\textit{pagos}}\vert \implicaLuego 
+            (\forall j : \ent)(0 \leq j < |{\textit{pagos}[i]}\vert \implicaLuego 0 \leq \textit{apuestas}[i][j]))
+            \y \\
+            (\forall i : \ent) (0 \leq i < |{\textit{pagos}}\vert \implicaLuego (\forall j : \ent)(0 \leq j < |{\textit{apuestas}}\vert \implicaLuego 
+            |{\textit{pagos}[i]}\vert = |{\textit{apuestas}[j]}\vert))
+            \y \\
+            (\forall i : \ent)(0 \leq i < |{\textit{eventos}}\vert \implicaLuego |{\textit{eventos}[0]}\vert = |{\textit{eventos}[i]}\vert) \y \\
+            (\forall i : \ent) (0 \leq i < |{\textit{eventos}}\vert \implicaLuego 
+            (\forall j : \ent)(0 \leq j < |{\textit{eventos}[i]}\vert \implicaLuego 0 \leq \textit{eventos}[i][j] < |{\textit{pagos}[i]}\vert))
+        }
 
-        \asegura{}
+        \asegura{
+            |{\textit{trayectorias}}\vert = |{\textit{eventos}}\vert \yLuego
+            (\forall i : \ent)(0 \leq i < |{\textit{trayectorias}[i]}\vert \implicaLuego |{\textit{trayectorias}[i]}\vert = |{\textit{eventos}[i]}\vert +1)
+            }
 
     \end{proc}
+
+    \aux{sumarApuestasIndividuo}{\textit{apuestasIndividuo} : seq⟨\real⟩}{\real}
+    {\\\sum_{n = 0}^{|{\textit{apuestasIndividuo}}\vert-1} \textit{apuestasIndividuo} [n]}
+
+
+
+
 
     \item \textbf{trayectoriaExtrañaEscalera} Esta función devuelve \textit{True} e sii en la trayectoria de un individuo existe un único punto mayor a sus vecinos (llamado máximo local). Un elemento es máximo local si es mayor estricto que sus vecinos inmediatos.
     
