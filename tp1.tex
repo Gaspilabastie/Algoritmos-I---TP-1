@@ -89,12 +89,13 @@
     {\\\sum_{i = 0}^{|{\textit{recursos}}\vert-1} 
     (if \hspace{2mm} \textit{cooperan}[i] = \True \hspace{2mm} then \hspace{2mm} \frac{\textit{recursos}[i]}{|{\textit{recursos}}\vert} \hspace{2mm} else \hspace{2mm} 0 \hspace{2mm} fi)}
     
+    \clearpage
 
     \item \textbf{trayectoriaDeLosFrutosIndividualesALargoPlazo}: Actualiza (In/Out) la lista de \textit{trayectorias} de los los recursos de cada uno de los individuos. Inicialmente, cada una de las trayectorias (listas de recursos) contiene un único elemento que representa los recursos iniciales del individuo. El procedimiento agrega a las \textit{trayectorias} los recursos que los individuos van obteniendo a medida que se van produciendo los resultados de los \textit{eventos} en función de la lista de \textit{pagos} que le ofrece la naturaleza (o casa de apuestas) a cada uno de los individuos, las \textit{apuestas} (o inversiones) que realizan los individuos en cada paso temporal, y la lista de individuos que \textit{cooperan} aportando al fondo monetario común.
     
     \begin{proc}{trayectoriaDeLosFrutosIndividualesALargoPlazo}{\Inout \textit{trayectorias}:
         seq⟨seq⟨\real⟩⟩, \In \textit{cooperan} : \TLista{Bool}, \In \textit{apuestas}: seq⟨seq⟨\real⟩⟩, \In \textit{pagos}: seq⟨seq⟨\real⟩⟩, 
-        \In \textit{eventos}: seq⟨seq⟨\nat}
+        \In \textit{eventos}: seq⟨seq⟨\nat⟩⟩}
     {}
         \requiere{
             |{\textit{trayectorias}}\vert = |{\textit{cooperan}}\vert = |{\textit{apuestas}}\vert = |{\textit{pagos}}\vert = |{\textit{eventos}}\vert \yLuego \\
@@ -120,17 +121,31 @@
 
         \asegura{
             |{\textit{trayectorias}}\vert = |{\textit{eventos}}\vert \yLuego
-            (\forall i : \ent)(0 \leq i < |{\textit{trayectorias}[i]}\vert \implicaLuego |{\textit{trayectorias}[i]}\vert = |{\textit{eventos}[i]}\vert +1)
+            (\forall i : \ent)(0 \leq i < |{\textit{trayectorias}}\vert \implicaLuego |{\textit{trayectorias}[i]}\vert = |{\textit{eventos}[i]}\vert +1) \y \\
+            (\forall i : \ent) (0 \leq i < |{\textit{trayectorias}}\vert \implicaLuego 
+            (\forall j : \ent)(0 \leq j < |{\textit{trayectorias}[i]}\vert +1 \implicaLuego ))
             }
 
     \end{proc}
 
+    \pred{trayectoriasCooperan}{\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}}
+    {\textit{cooperan}[i] = \True \implicaLuego \textit{trayectorias}[i][j] = distribuci\acute{o}nFondoCom\acute{u}nTrayectoria(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \\\textit{pagos}, \textit{eventos})}
+
+    \pred{trayectoriasNoCooperan}{\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}} 
+    {\textit{cooperan}[i] = \False \implicaLuego \textit{trayectorias}[i][j] = distribuci\acute{o}nFondoCom\acute{u}nTrayectoria(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas},\\ \textit{pagos}, \textit{eventos}) + trayectoria[i][|{\textit{trayectorias}}\vert-1]*gananciaIndividuo(apuestas[i], pagos[i],\\ eventos[i][|{\textit{trayectorias}}\vert-1])}
+
     \aux{sumarApuestasIndividuo}{\textit{apuestasIndividuo} : seq⟨\real⟩}{\real}
-    {\\\sum_{n = 0}^{|{\textit{apuestasIndividuo}}\vert-1} \textit{apuestasIndividuo} [n]}
+    {\\\sum_{n = 0}^{|{\textit{apuestasIndividuo}}\vert-1} \textit{apuestasIndividuo}[n]}
 
+    \aux {gananciaIndividuo}{\textit{apuestaIndividuo}: seq⟨\real⟩, \textit{pagosIndividuo}: seq⟨\real⟩, \textit{resultadoEventoIndividuo}: \real}{\real}
+    {\\\textit{apuestaIndividuo}[\textit{resultadoEventoIndividuo}] * \textit{pagosIndividuo}[\textit{resultadoEventoIndividuo}]}
 
+    \aux{distribuciónFondoComúnTrayectoria}{\textit{trayectorias}: seq⟨seq⟨\real⟩⟩, \textit{cooperan} : \TLista{Bool}, \textit{apuestas}: seq⟨seq⟨\real⟩⟩, \textit{pagos}: seq⟨seq⟨\real⟩⟩, 
+    \textit{eventos}: seq⟨seq⟨\nat⟩⟩}{\real}{\\
+        \frac{\sum_{i = 0}^{|{\textit{trayectorias}}\vert-1}{if \textit{cooperan}[i] = \True then \textit{trayectorias}[i][|{\textit{trayectorias}}\vert-1]*gananciaIndividuo(\textit{apuestas}[i], \textit{pagos}[i], \textit{eventos}[i][|{\textit{trayectorias}}\vert-1]) else 0 fi}}{|{\textit{trayectorias}}\vert} 
+    }
 
-
+    \clearpage 
 
     \item \textbf{trayectoriaExtrañaEscalera} Esta función devuelve \textit{True} e sii en la trayectoria de un individuo existe un único punto mayor a sus vecinos (llamado máximo local). Un elemento es máximo local si es mayor estricto que sus vecinos inmediatos.
     
@@ -154,12 +169,6 @@
                 m \leq n < |{\textit{trayectoria}}\vert-1 \implicaLuego \textit{trayectoria}[i] > \textit{trayectoria}[i + 1])
             ))
             } 
-
-
-            
-            
-            
-            
 
     \end{proc}
 
