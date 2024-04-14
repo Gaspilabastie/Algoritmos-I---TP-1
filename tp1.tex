@@ -107,7 +107,7 @@
             (\forall j : \ent) (0 \leq j < |{\textit{apuestas}[i]}\vert \implicaLuego 0 \leq \textit{apuestas}[i][j] \leq 1)) \y \\
             (\forall k, l : \ent)(0 \leq k, l < |{\textit{pagos}}\vert \implicaLuego |{\textit{pagos}[k]}\vert = |{\textit{pagos}[l]}\vert) \y \\
             (\forall i : \ent) (0 \leq i < |{\textit{pagos}}\vert \implicaLuego 
-            (\forall j : \ent)(0 \leq j < |{\textit{pagos}[i]}\vert \implicaLuego 0 \leq \textit{pagos}[i][j]))
+            (\forall j : \ent)(0 \leq j < |{\textit{pagos}[i]}\vert \implicaLuego 0 < \textit{pagos}[i][j]))
             \y \\
             (\forall i : \ent) (0 \leq i < |{\textit{pagos}}\vert \implicaLuego (\forall j : \ent)(0 \leq j < |{\textit{apuestas}}\vert \implicaLuego 
             |{\textit{pagos}[i]}\vert = |{\textit{apuestas}[j]}\vert))
@@ -169,6 +169,31 @@
                 m \leq n < |{\textit{trayectoria}}\vert-1 \implicaLuego \textit{trayectoria}[i] > \textit{trayectoria}[i + 1])
             ))
             } 
+
+    \end{proc}
+
+    \item \textbf{individuoDecideSiCooperarONo} Un \textit{individuo} actualiza su comportamiento cooperativo / no-cooperativo \\(\textit{cooperan}[\textit{individuo}]) en función de los recursos iniciales, de quienes \textit{cooperan}, de los \textit{pagos} que se le ofrecen a cada individuo, de las inversiones o \textit{apuestas} de cada individuo, y del resultado los \textit{eventos} que recibe cada individuo, eligiendo el comportamiento que maximiza sus recursos individuales luego de que ocurren todos los eventos.
+
+    \begin{proc}{individuoDecideSiCooperarONo}{\In \textit{individuo}:\nat, \In \textit{recursos}: seq⟨\real⟩, \Inout \textit{cooperan}: seq⟨Bool⟩, \In \textit{apuestas}: seq⟨seq⟨\real⟩⟩,
+        \In \textit{pagos}: seq⟨seq⟨\real⟩⟩, \In \textit{eventos}: seq⟨seq⟨\nat⟩⟩} {}
+        \requiere{
+            |{\textit{recursos}}\vert > 0 \y |{\textit{recursos}}\vert = |{\textit{cooperan}}\vert = |{\textit{apuestas}}\vert = |{\textit{pagos}}\vert = |{\textit{eventos}}\vert \y \\
+            0 \leq \textit{individuo} < |{\textit{recursos}}\vert \yLuego \\
+            (\forall i : \ent)(0 \leq i < |{\textit{recursos}}\vert \implicaLuego \textit{recursos}[i] > 0) \y \\
+            (\forall i : \ent)(0 \leq i < |{\textit{eventos}}\vert \implicaLuego |{\textit{eventos}[i]}\vert > 0) \y \\
+            (\forall i : \ent)(0 \leq i < |{\textit{eventos}}\vert \implicaLuego |{\textit{eventos}[i]}\vert = |{\textit{eventos}[0]}\vert) \y \\
+            (\forall i : \ent) (0 \leq i < |{\textit{eventos}}\vert \implicaLuego 
+            (\forall j : \ent)(0 \leq j < |{\textit{eventos}[i]}\vert \implicaLuego 0 \leq \textit{eventos}[i][j] < |{\textit{pagos}[i]}\vert)) \y \\
+            (\forall k, l : \ent)(0 \leq k, l < |{\textit{apuestas}}\vert \implicaLuego |{\textit{apuestas}[k]}\vert = |{\textit{apuestas}[l]}\vert) \y \\
+            (\forall i : \ent) ((0 \leq i < |{\textit{apuestas}}\vert \implicaLuego sumarApuestasIndividuo(\textit{apuestas}[i]) =1) \yLuego \\
+            (\forall j : \ent) (0 \leq j < |{\textit{apuestas}[i]}\vert \implicaLuego 0 \leq \textit{apuestas}[i][j] \leq 1)) \y \\
+            (\forall k, l : \ent)(0 \leq k, l < |{\textit{pagos}}\vert \implicaLuego |{\textit{pagos}[k]}\vert = |{\textit{pagos}[l]}\vert) \y \\
+            (\forall i : \ent) (0 \leq i < |{\textit{pagos}}\vert \implicaLuego 
+            (\forall j : \ent)(0 \leq j < |{\textit{pagos}[i]}\vert \implicaLuego 0 < \textit{pagos}[i][j])) \y \\
+            (\forall i : \ent) (0 \leq i < |{\textit{pagos}}\vert \implicaLuego (\forall j : \ent)(0 \leq j < |{\textit{apuestas}}\vert \implicaLuego 
+            |{\textit{pagos}[i]}\vert = |{\textit{apuestas}[j]}\vert))
+        }
+        \asegura{} 
 
     \end{proc}
 
