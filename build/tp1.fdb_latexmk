@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1712886497.85492 "d:/FRAN/Educacion/UBA/Algo_2/Algoritmos-I---TP-1/tp1.tex" "build/tp1.pdf" "tp1" 1712886498.60344 0
+["pdflatex"] 1713105496.72923 "d:/FRAN/Educacion/UBA/Algo_2/Algoritmos-I---TP-1/tp1.tex" "build/tp1.pdf" "tp1" 1713105497.4199 0
   "AEDmacros.tex" 1712795391 5113 98430aa8d31df0a3835aa3c3f008ab5a ""
   "C:/Users/franv/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1712843764 81068 299f700eb05b1217173e62b88b513bd0 ""
   "C:/Users/franv/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1000.pk" 1712428449 11548 838dc0463b3cb7d615aa2af3d7b0b2d8 ""
@@ -85,12 +85,12 @@
   "C:/Users/franv/AppData/Local/Programs/MiKTeX/tex/latex/listings/lstlang1.sty" 1710669304 205152 3812b81ccaa2f3b7199572b45e41280a ""
   "C:/Users/franv/AppData/Local/Programs/MiKTeX/tex/latex/listings/lstmisc.sty" 1710669304 77023 48b5adf5086dac991587916788887607 ""
   "C:/Users/franv/AppData/Local/Programs/MiKTeX/tex/latex/listings/lstpatch.sty" 1710669304 353 9024412f43e92cd5b21fe9ded82d0610 ""
-  "build/tp1.aux" 1712886498 427 394698cef3e83c03add2efe1a25fb99b "pdflatex"
+  "build/tp1.aux" 1713105497 427 394698cef3e83c03add2efe1a25fb99b "pdflatex"
   "caratula.sty" 1693401348 11654 b7d6c7f15260a7fe039ae1559c1c577c ""
-  "d:/FRAN/Educacion/UBA/Algo_2/Algoritmos-I---TP-1/tp1.tex" 1712886497 9663 e49ebb4b74e17592e993c197d94d6392 ""
+  "d:/FRAN/Educacion/UBA/Algo_2/Algoritmos-I---TP-1/tp1.tex" 1713105496 9823 2e1bb62ce1eb6f90db45dbe2a302e6b6 ""
   "logo_dc.jpg" 1693401348 128041 860ed529f2e122b3922f6ce21e3273f1 ""
   "logo_uba.jpg" 1693401349 229119 10f3a63be47e1e95e44f30008ec3af50 ""
-  "tp1.tex" 1712886497 9663 e49ebb4b74e17592e993c197d94d6392 ""
+  "tp1.tex" 1713105496 9823 2e1bb62ce1eb6f90db45dbe2a302e6b6 ""
   (generated)
   "build/tp1.aux"
   "build/tp1.log"
