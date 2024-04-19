@@ -56,9 +56,9 @@
 
     \begin{proc}{redistribucionDeLosFrutos}{\In \textit{recursos} : seq⟨\real⟩, \In \textit{cooperan} : \TLista{Bool}}
     {seq⟨\real⟩}
-        \requiere{|{\textit{recursos}}\vert > 0 \y |{\textit{cooperan}}\vert > 0
+        \requiere{|{\textit{recursos}}\vert > 0
         \y |{\textit{recursos}}\vert = |{\textit{cooperan}}\vert
-        \yLuego \\ 
+        \y \\ 
         \paraTodo[unalinea]{i}{\ent}
         {0 \leq i < |{\textit{recursos}}\vert \implicaLuego \textit{recursos}[i] > 0
         }
@@ -76,17 +76,17 @@
 
     \pred{nuevosRecursosCooperan}{\textit{recursos} : seq⟨\real⟩, \textit{cooperan} : \TLista{Bool}, \textit{res} : seq⟨\real⟩} 
     {\paraTodo[unalinea]{i}{\ent}
-    {0 \leq i < |{\textit{recursos}}\vert \y  \textit{cooperan}[i] = \True \implicaLuego res[i] = 
+    {0 \leq i < |{\textit{recursos}}\vert \yLuego  \textit{cooperan}[i] = \True \implicaLuego res[i] = 
     distribuci\acute{o}nFondoCom\acute{u}n(\textit{recursos}, \textit{cooperan})}}
     
     \pred{nuevosRecursosNoCooperan}{\textit{recursos} : seq⟨\real⟩, \textit{cooperan} : \TLista{Bool}, \textit{res} : seq⟨\real⟩} 
     {\paraTodo[unalinea]{i}{\ent}
-    {0 \leq i < |{\textit{recursos}}\vert \y  \textit{cooperan}[i] = \False \implicaLuego res[i] = 
+    {0 \leq i < |{\textit{recursos}}\vert \yLuego   \textit{cooperan}[i] = \False \implicaLuego res[i] = 
     distribuci\acute{o}nFondoCom\acute{u}n(\textit{recursos}, \textit{cooperan}) + \textit{recursos}[i]}}
 
     \aux{distribuciónFondoComún}{\textit{recursos} : 
     seq⟨\real⟩, \textit{cooperan} : \TLista{Bool}}{\real}
-    {\\\sum_{i = 0}^{|{\textit{recursos}}\vert-1} 
+    {\\(\sum_{i = 0}^{|{\textit{recursos}}\vert-1})
     (if \hspace{2mm} \textit{cooperan}[i] = \True \hspace{2mm} then \hspace{2mm} \frac{\textit{recursos}[i]}{|{\textit{recursos}}\vert} \hspace{2mm} else \hspace{2mm} 0 \hspace{2mm} fi)}
     
     \clearpage
@@ -98,10 +98,11 @@
         \In \textit{eventos}: seq⟨seq⟨\nat⟩⟩}
     {}
         \requiere{
-            |{\textit{trayectorias}}\vert = |{\textit{cooperan}}\vert = |{\textit{apuestas}}\vert = |{\textit{pagos}}\vert = |{\textit{eventos}}\vert \yLuego \\
+            |{\textit{trayectorias}}\vert = |{\textit{cooperan}}\vert = |{\textit{apuestas}}\vert = |{\textit{pagos}}\vert = |{\textit{eventos}}\vert \y \\
+            \textit{trayectorias} = \textit{$Trayectorias_{0}$} \yLuego \\
             (\forall i : \ent) (0 \leq i <|{\textit{trayectorias}}\vert \implicaLuego (
                 |{\textit{trayectorias}[i]}\vert =  1 \y \textit{trayectorias}[i][0] >  0
-            )) \y |{\textit{pagos}}\vert > 0 \yLuego \\
+            )) \y |{\textit{pagos}}\vert > 0 \y \\
             (\forall k, l : \ent)(0 \leq k, l < |{\textit{apuestas}}\vert \implicaLuego |{\textit{apuestas}[k]}\vert = |{\textit{apuestas}[l]}\vert) \y \\
             (\forall i : \ent) ((0 \leq i < |{\textit{apuestas}}\vert \implicaLuego sumarApuestasIndividuo(\textit{apuestas}[i]) =1) \yLuego \\
             (\forall j : \ent) (0 \leq j < |{\textit{apuestas}[i]}\vert \implicaLuego 0 \leq \textit{apuestas}[i][j] \leq 1)) \y \\
@@ -121,29 +122,29 @@
 
         \asegura{
             |{\textit{trayectorias}}\vert = |{\textit{eventos}}\vert \yLuego
+            (\forall i : \ent)(0 \leq i < |{\textit{trayectorias}}\vert \implicaLuego \textit{trayectorias}[i][0] = \textit{$Trayectorias_{0}$}[i][0]) \y \\
             (\forall i : \ent)(0 \leq i < |{\textit{trayectorias}}\vert \implicaLuego |{\textit{trayectorias}[i]}\vert = |{\textit{eventos}[i]}\vert +1) \y \\
             (\forall i : \ent) (0 \leq i < |{\textit{trayectorias}}\vert \implicaLuego 
-            (\forall j : \ent)(0 \leq j < |{\textit{trayectorias}[i]}\vert +1 \implicaLuego \\(trayectoriasCooperan(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}) \y \\
+            (\forall j : \ent)(0 < j < |{\textit{trayectorias}[i]}\vert \implicaLuego \\(trayectoriasCooperan(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}) \y \\
             trayectoriasNoCooperan(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}))))
             }
-
     \end{proc}
 
-    \pred{trayectoriasCooperan}{\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}}
-    {\textit{cooperan}[i] = \True \implicaLuego \textit{trayectorias}[i][j] = distribuci\acute{o}nFondoCom\acute{u}nTrayectoria(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \\\textit{pagos}, \textit{eventos})}
+    \pred{trayectoriasCooperan}{\textit{trayectorias} : seq⟨seq⟨\real⟩⟩, \textit{cooperan} : seq⟨Bool⟩, \textit{apuestas} : seq⟨seq⟨\real⟩⟩, \textit{pagos} : seq⟨seq⟨\real⟩⟩, \textit{eventos} : seq⟨seq⟨\ent⟩⟩}
+    {\textit{cooperan}[i] = \True \implicaLuego \textit{trayectorias}[i][j] = distribuci\acute{o}nFondoCom\acute{u}nTrayectoria(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \\\textit{pagos}, \textit{eventos}, j)}
 
-    \pred{trayectoriasNoCooperan}{\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}} 
-    {\textit{cooperan}[i] = \False \implicaLuego \textit{trayectorias}[i][j] = distribuci\acute{o}nFondoCom\acute{u}nTrayectoria(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas},\\ \textit{pagos}, \textit{eventos}) + trayectoria[i][|{\textit{trayectorias}}\vert-1]*gananciaIndividuo(apuestas[i], pagos[i],\\ eventos[i][|{\textit{trayectorias}}\vert-1])}
+    \pred{trayectoriasNoCooperan}{\textit{trayectorias} : seq⟨seq⟨\real⟩⟩, \textit{cooperan} : seq⟨Bool⟩, \textit{apuestas} : seq⟨seq⟨\real⟩⟩, \textit{pagos} : seq⟨seq⟨\real⟩⟩, \textit{eventos} : seq⟨seq⟨\ent⟩⟩} 
+    {\textit{cooperan}[i] = \False \implicaLuego \textit{trayectorias}[i][j] = distribuci\acute{o}nFondoCom\acute{u}nTrayectoria(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas},\\ \textit{pagos}, \textit{eventos}, j) + trayectoria[i][j-1]*gananciaIndividuo(apuestas[i], pagos[i],\\ eventos[i][j-1])}
 
     \aux{sumarApuestasIndividuo}{\textit{apuestasIndividuo} : seq⟨\real⟩}{\real}
-    {\\\sum_{n = 0}^{|{\textit{apuestasIndividuo}}\vert-1} \textit{apuestasIndividuo}[n]}
+    {\\(\sum_{n = 0}^{|{\textit{apuestasIndividuo}}\vert-1}) (\textit{apuestasIndividuo}[n])}
 
     \aux {gananciaIndividuo}{\textit{apuestaIndividuo}: seq⟨\real⟩, \textit{pagosIndividuo}: seq⟨\real⟩, \textit{resultadoEventoIndividuo}: \real}{\real}
     {\\\textit{apuestaIndividuo}[\textit{resultadoEventoIndividuo}] * \textit{pagosIndividuo}[\textit{resultadoEventoIndividuo}]}
 
     \aux{distribuciónFondoComúnTrayectoria}{\textit{trayectorias}: seq⟨seq⟨\real⟩⟩, \textit{cooperan} : \TLista{Bool}, \textit{apuestas}: seq⟨seq⟨\real⟩⟩, \textit{pagos}: seq⟨seq⟨\real⟩⟩, 
-    \textit{eventos}: seq⟨seq⟨\nat⟩⟩}{\real}{\\
-        \frac{\sum_{i = 0}^{|{\textit{trayectorias}}\vert-1}{if \textit{cooperan}[i] = \True then \textit{trayectorias}[i][|{\textit{trayectorias}}\vert-1]*gananciaIndividuo(\textit{apuestas}[i], \textit{pagos}[i], \textit{eventos}[i][|{\textit{trayectorias}}\vert-1]) else 0 fi}}{|{\textit{trayectorias}}\vert} 
+    \textit{eventos}: seq⟨seq⟨\nat⟩⟩, j : \ent}{\real}{\\
+        \frac{(\sum_{i = 0}^{j-1}){(if \textit{cooperan}[i] = \True then \textit{trayectorias}[i][j-1]*gananciaIndividuo(\textit{apuestas}[i], \textit{pagos}[i], \textit{eventos}[i][j-1]) else 0 fi)}}{|{\textit{trayectorias}}\vert}
     }
 
     \clearpage 
@@ -158,17 +159,17 @@
         }
 
         \asegura{
-            res \longleftrightarrow \True \implica |{\textit{trayectoria}}\vert = 1 \hspace{2mm} \oLuego \\ 
-            ((\forall i : \ent) ((\exists m : \ent)
+            res = \True \longleftrightarrow \\ 
+            (\exists m : \ent) ((\forall i : \ent)
             ((0 \leq i, m < |{\textit{trayectoria}}\vert \y i \neq m)
             \implicaLuego \textit{trayectoria}[m] > \textit{trayectoria}[i])
             \yLuego \\
             (\forall n : \ent)(
-                0 \leq n \leq m \implicaLuego \textit{trayectoria}[i] > \textit{trayectoria}[i - 1])
+                0 \leq n \leq m \implicaLuego \textit{trayectoria}[n] > \textit{trayectoria}[n - 1])
             \y \\
             (\forall n : \ent)(
-                m \leq n < |{\textit{trayectoria}}\vert-1 \implicaLuego \textit{trayectoria}[i] > \textit{trayectoria}[i + 1])
-            ))
+                m \leq n < |{\textit{trayectoria}}\vert-1 \implicaLuego \textit{trayectoria}[n] > \textit{trayectoria}[n + 1])
+            )
             } 
 
     \end{proc}
@@ -179,6 +180,7 @@
         \In \textit{pagos}: seq⟨seq⟨\real⟩⟩, \In \textit{eventos}: seq⟨seq⟨\nat⟩⟩} {}
         \requiere{
             |{\textit{recursos}}\vert > 0 \y |{\textit{recursos}}\vert = |{\textit{cooperan}}\vert = |{\textit{apuestas}}\vert = |{\textit{pagos}}\vert = |{\textit{eventos}}\vert \y \\
+            \textit{cooperan} =  \textit{$Cooperan_{0}$} \y \\
             0 \leq \textit{individuo} < |{\textit{recursos}}\vert \yLuego \\
             (\forall i : \ent)(0 \leq i < |{\textit{recursos}}\vert \implicaLuego \textit{recursos}[i] > 0) \y \\
             (\forall i : \ent)(0 \leq i < |{\textit{eventos}}\vert \implicaLuego |{\textit{eventos}[i]}\vert > 0) \y \\
@@ -194,9 +196,109 @@
             (\forall i : \ent) (0 \leq i < |{\textit{pagos}}\vert \implicaLuego (\forall j : \ent)(0 \leq j < |{\textit{apuestas}}\vert \implicaLuego 
             |{\textit{pagos}[i]}\vert = |{\textit{apuestas}[j]}\vert))
         }
-        \asegura{} 
+        \asegura{
+            |\textit{cooperan}| =  |\textit{$Cooperan_{0}$}| \yLuego %probar si || es igual a | \vert
+            (\forall i : \ent)(0 \leq i < |\textit{$Cooperan_{0}$}| \y i \neq \textit{individuo} \implicaLuego \textit{cooperan}[i] = \textit{$Cooperan_{0}$}[i]) \y \\
+            (\exists \textit{cooperanAlt}: seq⟨Bool⟩)((|{\textit{cooperanAlt}}\vert = |\textit{$Cooperan_{0}$}\vert \yLuego \\
+            (\forall i : \ent)(0 \leq i < |{\textit{cooperanAlt}}\vert \y i \neq \textit{individuo} \implicaLuego \textit{cooperanAlt}[i] = \textit{$Cooperan_{0}$}[i]) \y (\textit{cooperanAlt}[\textit{individuo}] = ¬\textit{$Cooperan_{0}$}[\textit{individuo}])) \y \\
+            (\exists \textit{trayectoria} : seq⟨seq⟨\real⟩⟩)(|{\textit{trayectoria}}\vert = |{\textit{eventos}}\vert \yLuego primeroTieneARecursos(\textit{recursos}, \textit{trayectoria}) \y moduloEventosMasUno(\textit{eventos}, \textit{trayectoria}) \y elementosDeT(\textit{apuestas},
+            \textit{pagos}, \textit{eventos}, \textit{$Cooperan_{0}$}, \textit{trayectoria}) \y \\
+            (\exists \textit{trayectoriaAlt} : seq⟨seq⟨\real⟩⟩)(|{\textit{trayectoriaAlt}}\vert = |{\textit{eventos}}\vert \yLuego primeroTieneARecursos(\textit{recursos}, \textit{trayectoriaAlt}) \y moduloEventosMasUno(\textit{eventos}, \textit{trayectoriaAlt}) \y elementosDeT(\textit{apuestas},
+            \textit{pagos}, \textit{eventos}, \textit{cooperanAlt}, \textit{trayectoriaAlt}) \y \textit{cooperan}[\textit{individuo}] = mejorEleccion(\textit{trayectoria}, \textit{trayectoriaAlt},\textit{Individuo}))
+            ))
+        }
 
     \end{proc}
 
+    \pred{primeroTieneARecursos}{\textit{recursos}:seq⟨\real⟩, \textit{trayectoria}:seq⟨seq⟨\real⟩⟩}
+    {(\forall i:\ent)(0 \leq i <|{\textit{trayectoria}}\vert \implicaLuego \textit{trayectoria}[i][0] = \textit{recursos}[i])}
+
+    \pred{moduloEventosMasUno}{\textit{eventos}:seq⟨seq⟨\real⟩⟩, \textit{trayectoria}:seq⟨seq⟨\real⟩⟩}
+    {(\forall i :\ent)(0 \leq i <|{\textit{trayectoria}}\vert \implicaLuego |{\textit{trayectoria}[i]}\vert = |{\textit{eventos}}\vert +1)}
+
+    \pred{elementosDeT}{\textit{apuestas}:seq⟨seq⟨\real⟩⟩,\textit{pagos}:seq⟨seq⟨\real⟩⟩, \textit{eventos}:seq⟨seq⟨\real⟩⟩, \textit{cooperan}:seq⟨Bool⟩, \textit{trayectoria}:seq⟨seq⟨\real⟩⟩}{(\forall i: \ent)(0 \leq i <|{\textit{trayectoria}}\vert \implicaLuego (\forall j: \ent)(0 \leq j <||{\textit{trayectoria}[i]}\vert \implicaLuego trayectoriasCooperan(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}) \y trayectoriasNoCooperan(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos})))}
+
+    \aux{mejorEleccion}{\textit{trayectoria}:seq⟨seq⟨\real⟩⟩,\textit{trayectoriaAlt}:seq⟨seq⟨\real⟩⟩,\textit{Individuo}}{Bool}
+    {(if\textit{trayectoria}[\textit{individuo}][|{\textit{trayectoria}[\textit{Individuo}]}\vert -1]
+     \geq \textit{trayectoriaAlt}[\textit{individuo}][|{\textit{trayectoriaAlt}[\textit{Individuo}]}\vert -1] then \textit{$Cooperan_{0}$}[\textit{individuo}] else \textit{CooperanAlt}[\textit{individuo}])}
+
+     \item \textbf{individuoActualizaApuesta} Un \textit{individuo} actualiza su apuesta (\textit{apuestas}[\textit{individuo}]) en función de los \textit{recursos} iniciales, de la lista de individuos que \textit{cooperan} , de los \textit{pagos} que se le ofrecen a cada individuo, de las inversiones o \textit{apuestas} de cada individuo y del resultado los eventos que recibe cada individuo, eligiendo la apuesta que maximiza sus recursos individuales luego de que ocurren todos los eventos.
+
+     \begin{proc}{individuoActualizaApuesta}{\In \textit{individuo}:\nat, \In \textit{recursos}: seq⟨\real⟩, \In \textit{cooperan}: seq⟨Bool⟩, \Inout \textit{apuestas}: seq⟨seq⟨\real⟩⟩,
+        \In \textit{pagos}: seq⟨seq⟨\real⟩⟩, \In \textit{eventos}: seq⟨seq⟨\nat⟩⟩}{}
+        \requiere{|{\textit{recursos}}\vert > 0 \y |{\textit{recursos}}\vert = |{\textit{cooperan}}\vert = |{\textit{apuestas}}\vert = |{\textit{pagos}}\vert = |{\textit{eventos}}\vert \\
+        (\forall i: \ent)(0 \leq i<|{\textit{recursos}}\vert \implicaLuego \textit{recursos[i]} > 0) \\
+        \textit{apuesta}=\textit{$Apuesta_{0}$} \\
+        (\forall i,j: \ent)(0 \leq i,j<|{\textit{apuestas}}\vert \implicaLuego |{\textit{apuestas}[i]}\vert = |{\textit{apuestas}[j]}\vert) \\
+        (\forall i : \ent)(0 \leq <|{\textit{apuestas}}\vert \implicaLuego sumarApuestasIndividuo(\textit{apuesta}[i] = 1)) \\
+        (\forall i,j: \ent)(0 \leq i <|{\textit{apuestas}}\vert \implicaLuego  0 \leq \textit{apuestas}[i][j] \geq 1) \\
+        (\forall i,j: \ent)(0 \leq i <|{\textit{pagos}}\vert \y 0 \leq j <|{\textit{pagos}[i]}\vert \implicaLuego \textit{pagos}[i][j] > 0)\\
+        (\forall i,j: \ent)(0 \leq i,j <|{\textit{eventos}}\vert \implicaLuego |{\textit{eventos}[i]}\vert = |{\textit{eventos}[j]}\vert) \\
+        (\forall i,j: \ent)(0 \leq i < |{\textit{eventos}}\vert \y 0 \leq j < |{\textit{eventos}[i]}\vert \implicaLuego 0 \leq \textit{eventos}[i][j] \geq |{\textit{pagos}[i]}\vert)
+        }
+        \asegura{
+            (\exists m:seq⟨seq⟨\real⟩⟩)(esApuestaVariante(m,\textit{individuo}) \yLuego (\exists \textit{trayectoriam}:seq⟨seq⟨\real⟩⟩)\\
+            (esTrayectoria(\textit{trayectoriam},\textit{recursos},\textit{eventos},\textit{pagos},\textit{cooperan},m)) \yLuego  \\
+            (\forall A : seq⟨seq⟨\real⟩⟩)(esApuestaVariante(A, \textit{individuo}) \implicaLuego \\
+            (\forall \textit{trayectoria} : seq⟨seq⟨\real⟩⟩)(esTrayectoria(\textit{trayectoria},\textit{recursos},\textit{eventos},\textit{pagos},\textit{cooperan},A) \implicaLuego \\
+            textit{trayectoriam}[textit{individuo}][|{\textit{trayectoriam}[\textit{individuo}]}\vert-1] \geq \textit{trayectoria}[\textit{individuo}][|{\textit{trayectoria}[\textit{individuo}]}\vert-1]
+            )))
+        }
+    \end{proc}
+
+    \pred{esApuestaVariante}{A : seq⟨seq⟨\real⟩⟩, \textit{individuo} : \nat}{
+        |{A}\vert = |{\textit{$Apuesta_{0}$}}\vert \y (\forall i : \ent)(0 \leq i < |{\textit{$Apuesta_{0}$}}\vert \y i \neq \textit{individuo} \implicaLuego A[i] = \textit{$Apuesta_{0}$}[i]) \y \\
+        |{A[\textit{individuo}]}\vert = |{\textit{$Apuesta_{0}$}[0]}\vert \y sumarApuestasIndividuo(A[\textit{individuo}]) = 1 \y \\
+        (\forall j : \ent)(0 \leq j < |{A[\textit{individuo}]}\vert \implicaLuego 0 \leq A[\textit{individuo}][j] \leq 1)
+    }
+
+    \pred{esTrayectoria}{\textit{trayectoria} : seq⟨seq⟨\real⟩⟩,\textit{recursos} : seq⟨\real⟩,\textit{eventos} : seq⟨seq⟨\ent⟩⟩,\textit{pagos} : seq⟨seq⟨\real⟩⟩, \textit{cooperan} : seq⟨Bool⟩, \textit{apuestas} : seq⟨seq⟨\real⟩⟩}{
+        primeroTieneARecursos(\textit{recursos}, \textit{trayectoria}) \y moduloEventosMasUno(\textit{eventos}, \textit{trayectoria}) \y elementosDeT(\textit{apuestas}, \textit{pagos}, \textit{eventos}, \textit{cooperan}, \textit{trayectoria})
+    }
+
 \end{enumerate}
+
+\section{Demostraciones de correctitud}
+Demostrar que la siguiente especificación es correcta respecto de su implementación.
+La función \textbf{frutoDelTrabajoPuramenteIndividual} calcula, para el ejemplo de apuestas al juego de cara o sello, cuánto
+se ganaría si se juega completamente solo. Se contempla que el evento \textit{True} es cuando sale cara
+
+\begin{proc}{frutoDelTrabajoPuramenteIndividual}{\In \textit{recursos}:seq⟨\real⟩, \In \textit{apuesta}:⟨s: \real, c:\real⟩,\In \textit{pago}:⟨s: \real, c:\real⟩,\In \textit{eventos}:seq⟨Bool⟩, \Out res: \real}{}
+
+    \requiere { 
+        \textit{$apuesta_{c}$ } + \textit{$apuesta_{s}$ } = 1 \y 
+        \textit{$pago_{c}$}>0 \y 
+        \textit{$pago_{s}$}>0 \y 
+        \textit{$apuesta_{c}$} >0 \y 
+        \textit{$apuesta_{s}$} >0 \y \textit{recurso} >0 
+        }
+
+    \asegura{\textit{res}=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{\textit{\#apariciones}(\textit{eventos,T})(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{\textit{\#apariciones}(\textit{eventos,F})} }}
+
+    \end{proc}
+
+    Donde \textit{\#apariciones}(\textit{eventos, T}) es el auxiliar utilizado en la téorica, y \# (eventos, T) es su abreviación. \\
+    
+    res = \textit{recursos}\\
+    i = 0 \\
+    While(i < $|{\textit{eventos}}\vert$) do \\
+    if \textit{eventos}[i] then \\
+    res = (res * $apuesta_{c}$ ) * $pago_{c}$ \\
+    else \\
+    res = (res * $apuesta_{s}$ ) * $pago_{s}$ \\
+    endif \\
+    i= i + 1 \\
+    endwhile \\
+     
+    Para probar la correctitud de este código usamos el teorema del invariante y la función variante. Entonces hay que probar:
+
+        1. $$P_{c}$$ \implica I \\
+        2. I \y B S I
+        3. I \y ¬B \implica $Q_{c}$
+        4. {I \y B \y $v_{0}$ = fv} S {fv < $v_{0}$}
+        5. I \y fv \leq 0 \implica ¬B
+
+    \\
+    \begin{enumerate}
+    \end{enumerate}  
 \end{document}
