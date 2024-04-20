@@ -4,7 +4,7 @@
 \usepackage{caratula}
 \usepackage[spanish]{babel} 
 \usepackage{amsfonts} 
-
+\usepackage[dvipsnames]{xcolor}
 
 \titulo{Trabajo prático 1: Especificación y WP}
 %\subtitulo{Subtítulo del tp}
@@ -45,6 +45,8 @@
 	\item Las \textit{apuestas} de los individuos representan la proporción de los recursos que los individuos invierten a cada una de los eventos posibles. Notar nuevamente que a diferencia del ejemplo, en este caso más general, podríamos tener apuestas distintas para cada evento por cada individuo.
 	\item Cada individuo apuesta siempre el mismo porcentaje por cada evento posible (es decir, el mismo número en cada paso temporal). Por ejemplo, si tenemos dos eventos; cara y ceca y apuesta 0, 4 por cara y 0,6 por seca, en cada paso temporal apostará esas proporciones.
     \item Se considera al número 0 como parte de \nat.
+    \item Debido a la ambigüedad presente en el ejercico sobre especificación en cuanto a si un jugador puede o no puede apostar todo sus recursos a un unico evento, y por ende que la apuesta de dicho jugador a un evento sea igual a 0,  nosotros tomamos bajo nuestro criterio personal que eso si es posible, y se llevo a cabo el ejercicio considerando dicha posibilidad.
+    
 \end{itemize}
 
 
@@ -142,14 +144,20 @@
     \aux {gananciaIndividuo}{\textit{apuestaIndividuo}: seq⟨\real⟩, \textit{pagosIndividuo}: seq⟨\real⟩, \textit{resultadoEventoIndividuo}: \real}{\real}
     {\\\textit{apuestaIndividuo}[\textit{resultadoEventoIndividuo}] * \textit{pagosIndividuo}[\textit{resultadoEventoIndividuo}]}
 
+    \aux{recolecciónFondoComún}{\textit{trayectorias}: seq⟨seq⟨\real⟩⟩, \textit{cooperan} : \TLista{Bool}, \textit{apuestas}: seq⟨seq⟨\real⟩⟩, \textit{pagos}: seq⟨seq⟨\real⟩⟩, 
+    \textit{eventos}: seq⟨seq⟨\nat⟩⟩, j : \ent}{\real}{\\
+        (\sum_{i = 0}^{j-1}){\\
+        (if \hspace{1mm}  \textit{cooperan}[i] = \True \hspace{1mm} then \hspace{1mm} \textit{trayectorias}[i][j-1]*gananciaIndividuo(\textit{apuestas}[i], \textit{pagos}[i], \textit{eventos}[i][j-1]) \hspace{1mm} else  \hspace{1mm} 0 \hspace{1mm} fi)}
+    }
+
     \aux{distribuciónFondoComúnTrayectoria}{\textit{trayectorias}: seq⟨seq⟨\real⟩⟩, \textit{cooperan} : \TLista{Bool}, \textit{apuestas}: seq⟨seq⟨\real⟩⟩, \textit{pagos}: seq⟨seq⟨\real⟩⟩, 
     \textit{eventos}: seq⟨seq⟨\nat⟩⟩, j : \ent}{\real}{\\
-        \frac{(\sum_{i = 0}^{j-1}){(if \textit{cooperan}[i] = \True then \textit{trayectorias}[i][j-1]*gananciaIndividuo(\textit{apuestas}[i], \textit{pagos}[i], \textit{eventos}[i][j-1]) else 0 fi)}}{|{\textit{trayectorias}}\vert}
+        \frac{(recolecci\acute{o}nFondoCom\acute{u}n(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}, j))}{|{\textit{trayectorias}}\vert}
     }
 
     \clearpage 
 
-    \item \textbf{trayectoriaExtrañaEscalera} Esta función devuelve \textit{True} e sii en la trayectoria de un individuo existe un único punto mayor a sus vecinos (llamado máximo local). Un elemento es máximo local si es mayor estricto que sus vecinos inmediatos.
+    \item \textbf{trayectoriaExtrañaEscalera} Esta función devuelve \textit{True} sii en la trayectoria de un individuo existe un único punto mayor a sus vecinos (llamado máximo local). Un elemento es máximo local si es mayor estricto que sus vecinos inmediatos.
     
     \begin{proc}{trayectoriaExtrañaEscalera}{\In \textit{trayectoria}: seq⟨\real⟩} {Bool}
         \requiere{
@@ -174,7 +182,7 @@
 
     \end{proc}
 
-    \item \textbf{individuoDecideSiCooperarONo} Un \textit{individuo} actualiza su comportamiento cooperativo / no-cooperativo \\(\textit{cooperan}[\textit{individuo}]) en función de los recursos iniciales, de quienes \textit{cooperan}, de los \textit{pagos} que se le ofrecen a cada individuo, de las inversiones o \textit{apuestas} de cada individuo, y del resultado los \textit{eventos} que recibe cada individuo, eligiendo el comportamiento que maximiza sus recursos individuales luego de que ocurren todos los eventos.
+    \item \textbf{individuoDecideSiCooperarONo} Un \textit{individuo} actualiza su comportamiento cooperativo / no-cooperativo \\(\textit{cooperan}[\textit{individuo}]) en función de los recursos iniciales, de quienes \textit{cooperan}, de los \textit{pagos} que se le ofrecen a cada individuo, de las inversiones o \textit{apuestas} de cada individuo, y del resultado de los \textit{eventos} que recibe cada individuo, eligiendo el comportamiento que maximiza sus recursos individuales luego de que ocurren todos los eventos.
 
     \begin{proc}{individuoDecideSiCooperarONo}{\In \textit{individuo}:\nat, \In \textit{recursos}: seq⟨\real⟩, \Inout \textit{cooperan}: seq⟨Bool⟩, \In \textit{apuestas}: seq⟨seq⟨\real⟩⟩,
         \In \textit{pagos}: seq⟨seq⟨\real⟩⟩, \In \textit{eventos}: seq⟨seq⟨\nat⟩⟩} {}
@@ -197,14 +205,15 @@
             |{\textit{pagos}[i]}\vert = |{\textit{apuestas}[j]}\vert))
         }
         \asegura{
-            |\textit{cooperan}| =  |\textit{$Cooperan_{0}$}| \yLuego %probar si || es igual a | \vert
+            |\textit{cooperan}| =  |\textit{$Cooperan_{0}$}| \yLuego \\ %probar si || es igual a | \vert
             (\forall i : \ent)(0 \leq i < |\textit{$Cooperan_{0}$}| \y i \neq \textit{individuo} \implicaLuego \textit{cooperan}[i] = \textit{$Cooperan_{0}$}[i]) \y \\
             (\exists \textit{cooperanAlt}: seq⟨Bool⟩)((|{\textit{cooperanAlt}}\vert = |\textit{$Cooperan_{0}$}\vert \yLuego \\
-            (\forall i : \ent)(0 \leq i < |{\textit{cooperanAlt}}\vert \y i \neq \textit{individuo} \implicaLuego \textit{cooperanAlt}[i] = \textit{$Cooperan_{0}$}[i]) \y (\textit{cooperanAlt}[\textit{individuo}] = ¬\textit{$Cooperan_{0}$}[\textit{individuo}])) \y \\
-            (\exists \textit{trayectoria} : seq⟨seq⟨\real⟩⟩)(|{\textit{trayectoria}}\vert = |{\textit{eventos}}\vert \yLuego primeroTieneARecursos(\textit{recursos}, \textit{trayectoria}) \y moduloEventosMasUno(\textit{eventos}, \textit{trayectoria}) \y elementosDeT(\textit{apuestas},
-            \textit{pagos}, \textit{eventos}, \textit{$Cooperan_{0}$}, \textit{trayectoria}) \y \\
-            (\exists \textit{trayectoriaAlt} : seq⟨seq⟨\real⟩⟩)(|{\textit{trayectoriaAlt}}\vert = |{\textit{eventos}}\vert \yLuego primeroTieneARecursos(\textit{recursos}, \textit{trayectoriaAlt}) \y moduloEventosMasUno(\textit{eventos}, \textit{trayectoriaAlt}) \y elementosDeT(\textit{apuestas},
-            \textit{pagos}, \textit{eventos}, \textit{cooperanAlt}, \textit{trayectoriaAlt}) \y \textit{cooperan}[\textit{individuo}] = mejorEleccion(\textit{trayectoria}, \textit{trayectoriaAlt},\textit{Individuo}))
+            (\forall i : \ent)(0 \leq i < |{\textit{cooperanAlt}}\vert \y i \neq \textit{individuo} \implicaLuego \textit{cooperanAlt}[i] = \textit{$Cooperan_{0}$}[i]) \y \\ (\textit{cooperanAlt}[\textit{individuo}] = \neg\textit{$Cooperan_{0}$}[\textit{individuo}])) \y \\
+            (\exists \textit{trayectoria} : seq\langle seq\langle \real\rangle\rangle)(|{\textit{trayectoria}}\vert = |{\textit{eventos}}\vert \yLuego primeroTieneARecursos(\textit{recursos}, \textit{trayectoria}) \y \\ moduloEventosMasUno(\textit{eventos}, \textit{trayectoria}) \y elementosDeT(\textit{apuestas},
+            \textit{pagos}, \textit{eventos}, \textit{$Cooperan_{0}$}, \textit{trayectoria}) \y
+            (\exists \textit{trayectoriaAlt} : seq\langle seq\langle \real\rangle\rangle)(|{\textit{trayectoriaAlt}}\vert = |{\textit{eventos}}\vert \yLuego primeroTieneARecursos(\textit{recursos}, \textit{trayectoriaAlt}) \y moduloEventosMasUno(\textit{eventos}, \textit{trayectoriaAlt}) \y \\
+            elementosDeT(\textit{apuestas}, \textit{pagos}, \textit{eventos}, \textit{cooperanAlt}, \textit{trayectoriaAlt}) \yLuego \\
+            \textit{cooperan}[\textit{individuo}] = mejorEleccion(\textit{trayectoria}, \textit{trayectoriaAlt},\textit{Individuo}))
             ))
         }
 
@@ -216,54 +225,63 @@
     \pred{moduloEventosMasUno}{\textit{eventos}:seq⟨seq⟨\real⟩⟩, \textit{trayectoria}:seq⟨seq⟨\real⟩⟩}
     {(\forall i :\ent)(0 \leq i <|{\textit{trayectoria}}\vert \implicaLuego |{\textit{trayectoria}[i]}\vert = |{\textit{eventos}}\vert +1)}
 
-    \pred{elementosDeT}{\textit{apuestas}:seq⟨seq⟨\real⟩⟩,\textit{pagos}:seq⟨seq⟨\real⟩⟩, \textit{eventos}:seq⟨seq⟨\real⟩⟩, \textit{cooperan}:seq⟨Bool⟩, \textit{trayectoria}:seq⟨seq⟨\real⟩⟩}{(\forall i: \ent)(0 \leq i <|{\textit{trayectoria}}\vert \implicaLuego (\forall j: \ent)(0 \leq j <||{\textit{trayectoria}[i]}\vert \implicaLuego trayectoriasCooperan(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}) \y trayectoriasNoCooperan(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos})))}
+    \pred{elementosDeT}{\textit{apuestas}:seq⟨seq⟨\real⟩⟩,\textit{pagos}:seq⟨seq⟨\real⟩⟩, \textit{eventos}:seq⟨seq⟨\real⟩⟩, \\
+    \textit{cooperan}:seq⟨Bool⟩, \textit{trayectoria}:seq⟨seq⟨\real⟩⟩}{(\forall i: \ent)(0 \leq i <|{\textit{trayectoria}}\vert \implicaLuego (\forall j: \ent)(0 \leq j <||{\textit{trayectoria}[i]}\vert \implicaLuego \\
+    trayectoriasCooperan(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos}) \y \\
+    trayectoriasNoCooperan(\textit{trayectorias}, \textit{cooperan}, \textit{apuestas}, \textit{pagos}, \textit{eventos})))}
 
     \aux{mejorEleccion}{\textit{trayectoria}:seq⟨seq⟨\real⟩⟩,\textit{trayectoriaAlt}:seq⟨seq⟨\real⟩⟩,\textit{Individuo}}{Bool}
-    {(if\textit{trayectoria}[\textit{individuo}][|{\textit{trayectoria}[\textit{Individuo}]}\vert -1]
-     \geq \textit{trayectoriaAlt}[\textit{individuo}][|{\textit{trayectoriaAlt}[\textit{Individuo}]}\vert -1] then \textit{$Cooperan_{0}$}[\textit{individuo}] else \textit{CooperanAlt}[\textit{individuo}])}
+    {\\(if \hspace{2mm} \textit{trayectoria}[\textit{individuo}][|{\textit{trayectoria}[\textit{Individuo}]}\vert -1] \geq \textit{trayectoriaAlt}[\textit{individuo}][|{\textit{trayectoriaAlt}[\textit{Individuo}]}\vert -1] \hspace{2mm} then \\
+    \textit{$Cooperan_{0}$}[\textit{individuo}] \hspace{2mm} else \hspace{2mm} \textit{CooperanAlt}[\textit{individuo}] \hspace{2mm} fi)}
+    
 
-     \item \textbf{individuoActualizaApuesta} Un \textit{individuo} actualiza su apuesta (\textit{apuestas}[\textit{individuo}]) en función de los \textit{recursos} iniciales, de la lista de individuos que \textit{cooperan} , de los \textit{pagos} que se le ofrecen a cada individuo, de las inversiones o \textit{apuestas} de cada individuo y del resultado los eventos que recibe cada individuo, eligiendo la apuesta que maximiza sus recursos individuales luego de que ocurren todos los eventos.
+     \clearpage
+
+     \item \textbf{individuoActualizaApuesta} Un \textit{individuo} actualiza su apuesta (\textit{apuestas}[\textit{individuo}]) en función de los \textit{recursos} iniciales, de la lista de individuos que \textit{cooperan} , de los \textit{pagos} que se le ofrecen a cada individuo, de las inversiones o \textit{apuestas} de cada individuo y del resultado de los eventos que recibe cada individuo, eligiendo la apuesta que maximiza sus recursos individuales luego de que ocurren todos los eventos.
 
      \begin{proc}{individuoActualizaApuesta}{\In \textit{individuo}:\nat, \In \textit{recursos}: seq⟨\real⟩, \In \textit{cooperan}: seq⟨Bool⟩, \Inout \textit{apuestas}: seq⟨seq⟨\real⟩⟩,
         \In \textit{pagos}: seq⟨seq⟨\real⟩⟩, \In \textit{eventos}: seq⟨seq⟨\nat⟩⟩}{}
-        \requiere{|{\textit{recursos}}\vert > 0 \y |{\textit{recursos}}\vert = |{\textit{cooperan}}\vert = |{\textit{apuestas}}\vert = |{\textit{pagos}}\vert = |{\textit{eventos}}\vert \\
-        (\forall i: \ent)(0 \leq i<|{\textit{recursos}}\vert \implicaLuego \textit{recursos[i]} > 0) \\
-        \textit{apuesta}=\textit{$Apuesta_{0}$} \\
-        (\forall i,j: \ent)(0 \leq i,j<|{\textit{apuestas}}\vert \implicaLuego |{\textit{apuestas}[i]}\vert = |{\textit{apuestas}[j]}\vert) \\
-        (\forall i : \ent)(0 \leq <|{\textit{apuestas}}\vert \implicaLuego sumarApuestasIndividuo(\textit{apuesta}[i] = 1)) \\
-        (\forall i,j: \ent)(0 \leq i <|{\textit{apuestas}}\vert \implicaLuego  0 \leq \textit{apuestas}[i][j] \geq 1) \\
-        (\forall i,j: \ent)(0 \leq i <|{\textit{pagos}}\vert \y 0 \leq j <|{\textit{pagos}[i]}\vert \implicaLuego \textit{pagos}[i][j] > 0)\\
-        (\forall i,j: \ent)(0 \leq i,j <|{\textit{eventos}}\vert \implicaLuego |{\textit{eventos}[i]}\vert = |{\textit{eventos}[j]}\vert) \\
+        \requiere{|{\textit{recursos}}\vert > 0 \y |{\textit{recursos}}\vert = |{\textit{cooperan}}\vert = |{\textit{apuestas}}\vert = |{\textit{pagos}}\vert = |{\textit{eventos}}\vert \yLuego \\
+        (\forall i: \ent)(0 \leq i<|{\textit{recursos}}\vert \implicaLuego \textit{recursos[i]} > 0) \y \\
+        \textit{apuestas}=\textit{$Apuestas_{0}$} \y \\
+        (\forall i,j: \ent)(0 \leq i,j<|{\textit{apuestas}}\vert \implicaLuego |{\textit{apuestas}[i]}\vert = |{\textit{apuestas}[j]}\vert) \y \\
+        (\forall i :  \ent)(0 \leq i <|{\textit{apuestas}}\vert \implicaLuego sumarApuestasIndividuo(\textit{apuestas}[i] = 1)) \y \\
+        (\forall i,j: \ent)(0 \leq i <|{\textit{apuestas}}\vert \implicaLuego  0 \leq \textit{apuestas}[i][j] \geq 1) \y \\
+        (\forall i,j: \ent)(0 \leq i <|{\textit{pagos}}\vert \y 0 \leq j <|{\textit{pagos}[i]}\vert \implicaLuego \textit{pagos}[i][j] > 0) \y \\
+        (\forall i,j: \ent)(0 \leq i,j <|{\textit{eventos}}\vert \implicaLuego |{\textit{eventos}[i]}\vert = |{\textit{eventos}[j]}\vert) \y \\
         (\forall i,j: \ent)(0 \leq i < |{\textit{eventos}}\vert \y 0 \leq j < |{\textit{eventos}[i]}\vert \implicaLuego 0 \leq \textit{eventos}[i][j] \geq |{\textit{pagos}[i]}\vert)
         }
         \asegura{
-            (\exists m:seq⟨seq⟨\real⟩⟩)(esApuestaVariante(m,\textit{individuo}) \yLuego (\exists \textit{trayectoriam}:seq⟨seq⟨\real⟩⟩)\\
-            (esTrayectoria(\textit{trayectoriam},\textit{recursos},\textit{eventos},\textit{pagos},\textit{cooperan},m)) \yLuego  \\
-            (\forall A : seq⟨seq⟨\real⟩⟩)(esApuestaVariante(A, \textit{individuo}) \implicaLuego \\
-            (\forall \textit{trayectoria} : seq⟨seq⟨\real⟩⟩)(esTrayectoria(\textit{trayectoria},\textit{recursos},\textit{eventos},\textit{pagos},\textit{cooperan},A) \implicaLuego \\
-            textit{trayectoriam}[textit{individuo}][|{\textit{trayectoriam}[\textit{individuo}]}\vert-1] \geq \textit{trayectoria}[\textit{individuo}][|{\textit{trayectoria}[\textit{individuo}]}\vert-1]
-            )))
+            (\exists m:seq\langle seq\langle \real\rangle\rangle)(esApuestaVariante(m,\textit{individuo}) \yLuego (\exists \textit{trayectoriam}:seq\langle seq\langle \real\rangle\rangle) \\
+            (esTrayectoria(\textit{trayectoriam},\textit{recursos},\textit{eventos},\textit{pagos},\textit{cooperan},m) \yLuego  \\
+            (\forall A : seq\langle seq\langle \real\rangle\rangle)(esApuestaVariante(A, \textit{individuo}) \implicaLuego \\
+            (\forall \textit{trayectoria} : seq\langle seq\langle \real\rangle\rangle)(esTrayectoria(\textit{trayectoria},\textit{recursos},\textit{eventos},\textit{pagos},\textit{cooperan},A) \implicaLuego \\
+            \textit{trayectoriam}[\textit{individuo}][|{\textit{trayectoriam}[\textit{individuo}]}\vert-1] \geq \textit{trayectoria}[\textit{individuo}][|{\textit{trayectoria}[\textit{individuo}]}\vert-1]
+            ))))
         }
     \end{proc}
 
     \pred{esApuestaVariante}{A : seq⟨seq⟨\real⟩⟩, \textit{individuo} : \nat}{
-        |{A}\vert = |{\textit{$Apuesta_{0}$}}\vert \y (\forall i : \ent)(0 \leq i < |{\textit{$Apuesta_{0}$}}\vert \y i \neq \textit{individuo} \implicaLuego A[i] = \textit{$Apuesta_{0}$}[i]) \y \\
-        |{A[\textit{individuo}]}\vert = |{\textit{$Apuesta_{0}$}[0]}\vert \y sumarApuestasIndividuo(A[\textit{individuo}]) = 1 \y \\
+        |{A}\vert = |{\textit{$Apuestas_{0}$}}\vert \y (\forall i : \ent)(0 \leq i < |{\textit{$Apuestas_{0}$}}\vert \y i \neq \textit{individuo} \implicaLuego A[i] = \textit{$Apuestas_{0}$}[i]) \y \\
+        |{A[\textit{individuo}]}\vert = |{\textit{$Apuestas_{0}$}[0]}\vert \y sumarApuestasIndividuo(A[\textit{individuo}]) = 1 \y \\
         (\forall j : \ent)(0 \leq j < |{A[\textit{individuo}]}\vert \implicaLuego 0 \leq A[\textit{individuo}][j] \leq 1)
     }
 
     \pred{esTrayectoria}{\textit{trayectoria} : seq⟨seq⟨\real⟩⟩,\textit{recursos} : seq⟨\real⟩,\textit{eventos} : seq⟨seq⟨\ent⟩⟩,\textit{pagos} : seq⟨seq⟨\real⟩⟩, \textit{cooperan} : seq⟨Bool⟩, \textit{apuestas} : seq⟨seq⟨\real⟩⟩}{
-        primeroTieneARecursos(\textit{recursos}, \textit{trayectoria}) \y moduloEventosMasUno(\textit{eventos}, \textit{trayectoria}) \y elementosDeT(\textit{apuestas}, \textit{pagos}, \textit{eventos}, \textit{cooperan}, \textit{trayectoria})
+        primeroTieneARecursos(\textit{recursos}, \textit{trayectoria}) \hspace{2mm} \y \hspace{2mm} moduloEventosMasUno(\textit{eventos}, \textit{trayectoria}) \hspace{2mm} \y \\
+        elementosDeT(\textit{apuestas}, \textit{pagos}, \textit{eventos}, \textit{cooperan}, \textit{trayectoria})
     }
 
 \end{enumerate}
+
+\clearpage
 
 \section{Demostraciones de correctitud}
 Demostrar que la siguiente especificación es correcta respecto de su implementación.
 La función \textbf{frutoDelTrabajoPuramenteIndividual} calcula, para el ejemplo de apuestas al juego de cara o sello, cuánto
 se ganaría si se juega completamente solo. Se contempla que el evento \textit{True} es cuando sale cara
 
-\begin{proc}{frutoDelTrabajoPuramenteIndividual}{\In \textit{recursos}:seq⟨\real⟩, \In \textit{apuesta}:⟨s: \real, c:\real⟩,\In \textit{pago}:⟨s: \real, c:\real⟩,\In \textit{eventos}:seq⟨Bool⟩, \Out res: \real}{}
+\begin{proc}{frutoDelTrabajoPuramenteIndividual}{\In \textit{recursos}:seq⟨\real⟩, \In \textit{apuestas}:⟨s: \real, c:\real⟩,\In \textit{pago}:⟨s: \real, c:\real⟩,\In \textit{eventos}:seq⟨Bool⟩, \Out res: \real}{}
 
     \requiere { 
         \textit{$apuesta_{c}$ } + \textit{$apuesta_{s}$ } = 1 \y 
@@ -277,28 +295,187 @@ se ganaría si se juega completamente solo. Se contempla que el evento \textit{T
 
     \end{proc}
 
-    Donde \textit{\#apariciones}(\textit{eventos, T}) es el auxiliar utilizado en la téorica, y \# (eventos, T) es su abreviación. \\
+    Donde \textit{\#apariciones}(\textit{eventos, T}) es el auxiliar utilizado en la téorica, y \#(eventos, T) es su abreviación. \\
     
-    res = \textit{recursos}\\
-    i = 0 \\
-    While(i < $|{\textit{eventos}}\vert$) do \\
-    if \textit{eventos}[i] then \\
-    res = (res * $apuesta_{c}$ ) * $pago_{c}$ \\
-    else \\
-    res = (res * $apuesta_{s}$ ) * $pago_{s}$ \\
-    endif \\
-    i= i + 1 \\
+    res = \textit{recursos}
+
+    i = 0
+    
+    While ($i < \left\lvert {\textit{eventos}}\right\rvert$) do
+    
+    \textcolor{white}{ea}if \textit{eventos}[i] then
+    
+    \textcolor{white}{easily}res = (res * $apuesta_{c}$ ) * $pago_{c}$
+    
+    \textcolor{white}{ea}else
+
+    \textcolor{white}{easily}res = (res * $apuesta_{s}$ ) * $pago_{s}$
+
+    \textcolor{white}{ea}endif
+
+    \textcolor{white}{ea}i= i + 1
+
     endwhile \\
      
-    Para probar la correctitud de este código usamos el teorema del invariante y la función variante. Entonces hay que probar:
+    Para probar la correctitud de este código usamos el teorema de correción de un ciclo, para lo cual se propone el siguiente invariante:
 
-        1. $$P_{c}$$ \implica I \\
-        2. I \y B S I
-        3. I \y ¬B \implica $Q_{c}$
-        4. {I \y B \y $v_{0}$ = fv} S {fv < $v_{0}$}
-        5. I \y fv \leq 0 \implica ¬B
+    $I \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y \\
+     \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+     (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$\\
+     
+    Y la siguiente funcion decreciente:
+    
+    $\funcionDecresiente \equiv |\textit{eventos}\vert - i$ \\
+    
+    Entonces hay que probar:
 
-    \\
     \begin{enumerate}
-    \end{enumerate}  
+        \item $\precondicion \hspace{2mm} \implica \hspace{2mm} I$
+        \item $\left\lbrace I \y B \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace I \right\rbrace$
+        \item $I \y \neg B  \hspace{2mm} \implica \hspace{2mm} $ \postcondicion
+        \item $\left\lbrace I \y B \y \metavariable = \funcionDecresiente \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace \funcionDecresiente < \metavariable \right\rbrace$
+        \item $I \hspace{0.5mm} \y \hspace{0.5mm} \funcionDecresiente \leq 0  \hspace{2mm} \implica \hspace{2mm} \neg B$
+    \end{enumerate} 
+    
+    
+    \begin{enumerate}
+        \item Veamos que se cumple 1 ($\precondicion \hspace{2mm} \implica \hspace{2mm} I$):\\
+
+
+        $\precondicion \equiv \textit{res} = \textit{recursos} \y i=0$
+        
+        $I \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y \\
+        \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+        (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$\\
+        
+        Podemos remplazar \precondicion \hspace{0.5mm} en I para ver que es tautologico. \\
+
+        $I \equiv 0 \leq 0 \leq |{\textit{eventos}}\vert \y \\
+        \textit{recurso} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{0 -1})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+        (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{0 -1})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$\\
+        $\equiv \True \y \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{0}
+        (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{0}$\\   
+        $\equiv \True \y \textit{recurso} = \textit{recurso} \equiv \True$
+        \\
+
+        Entonces se puede observar que $\precondicion \hspace{2mm} \implica \hspace{2mm} I$ \hspace{1mm} se cumple.
+
+        \clearpage
+
+        \item Veamos que se cumple 2 ($\left\lbrace I \y B \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace I \right\rbrace$):\\
+        
+        $I \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y \\
+        \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+        (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$
+        
+        $ B: i < |{\textit{eventos}}\vert$
+        
+        Primero vemos si $I \y B \implica wp(if..., i := i + 1, I)$
+
+        $wp(i := i +1, I) \equiv def(i+1) \yLuego \reemplazo \equiv (-1 \leq i \leq |{\textit{eventos}}\vert-1) \y \\
+        (\textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+        (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)})\\
+        \equiv E1$\\
+
+        $ wp(if..., E1) \equiv def(eventos[i]) \y (( eventos[i] \y wp(res := res\textit{\apuestac}\textit{\pagoc}, E1)) v \\ (\neg eventos[i] \y wp(res := res\textit{\apuestas}\textit{pagos}, E1)))$ \\
+        
+        $\equiv (0 \leq i \leq |\textit{eventos}\vert) \y \\
+        ((eventos[i] \y \\ res\apuestac\pagoc=\textit{recurso}(\textit{\apuestac}\textit{\pagoc})^{(\sum_{j = 0}^{i})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{\apuestas}\textit{\pagos})^{(\sum_{j = 0}^{i})(if eventos[j] = \False then  1 else 0 fi)}) \\
+        \lor \\ (\neg eventos[i] \y \\ res\apuestas\pagos=\textit{recurso}(\textit{\apuestac}\textit{\pagoc})^{(\sum_{j = 0}^{i})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{\apuestas}\textit{\pagos})^{(\sum_{j = 0}^{i})(if eventos[j] = \False then 1 else 0 fi)})\\
+        ) $
+        
+        
+        $\equiv (0 \leq i \leq |\textit{eventos}\vert) \y \\
+        ((eventos[i] \y \\ res=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i})(if eventos[j] = \False then  1 else 0 fi)}) 
+        \lor \\ (\neg eventos[i] \y \\ res=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \False then 1 else 0 fi)})
+        ) 
+        $
+
+        $\equiv (0 \leq i \leq |\textit{eventos}\vert) \y \\
+        ((eventos[i] \y \\ res=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \False then  1 else 0 fi)}) 
+        \lor \\ (\neg eventos[i] \y \\ res=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \False then 1 else 0 fi)})
+        ) 
+        $
+
+        $\equiv (0 \leq i \leq |\textit{eventos}\vert) \y 
+        ((eventos[i] \lor \neg eventos[i]) \y \\
+        (res = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \False then 1 else 0 fi)})
+        ) 
+        $
+
+        $\equiv (0 \leq i \leq |\textit{eventos}\vert) \y \\
+        (res = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \False then 1 else 0 fi)})
+        $
+
+        $\equiv I $
+
+        Entonces se puede observar que $\left\lbrace I \y B \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace I \right\rbrace$ \hspace{1mm} se cumple.
+
+        \item Veamos que se cumple 3 ($I \y \neg B \hspace{2mm} \implica \hspace{2mm} $ \postcondicion):\\
+        
+        $\postcondicion: \textit{res}=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{\textit{\#apariciones}(\textit{eventos,T})}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{\textit{\#apariciones}(\textit{eventos,F})}$
+
+        $\neg B: i \geq |{\textit{eventos}}\vert$
+
+        $I \y \neg B \hspace{2mm} \implica \hspace{2mm} $ \postcondicion
+
+        $I \y \neg B \equiv  0 \leq i \leq |\textit{eventos}\vert \y i \geq |\textit{eventos}\vert \\
+        \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+        (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$\\
+
+        $I \y \neg B \equiv  i = |\textit{eventos}\vert \y \\
+        \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{|\textit{eventos}\vert -1})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+        (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{|\textit{eventos}\vert -1})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$
+
+        $I \y \neg B \equiv  i = |\textit{eventos}\vert \y 
+        \textit{res}=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{\textit{\#apariciones}(\textit{eventos,T})}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{\textit{\#apariciones}(\textit{eventos,F})}$\\
+        
+        Entonces se puede observar que $I \y \neg B \hspace{2mm} \implica \hspace{2mm} $ \postcondicion \hspace{1mm} se cumple.
+
+        \clearpage
+
+        \item Veamos que se cumple 4 ($\left\lbrace I \y B \y \metavariable = \funcionDecresiente \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace \funcionDecresiente < \metavariable \right\rbrace$): \\
+        
+        
+        $I \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y \\
+        \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+        (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$\\
+        $B \equiv i \leq |\textit{eventos}\vert$\\
+       \funcionDecresiente= $|\textit{evento}\vert - i = \metavariable$\\
+
+
+        Hay que hacer empezar buscando hay que buscar la precondición más débil del ciclo. \\
+        $wp(i := i + 1,{\funcionDecresiente < \metavariable}) \equiv def(i+1) \y Q_{i+1}^{i} \equiv fv < |\textit{evento}\vert - (i+1)$ \\
+        $wp((if \hspace{0.5mm} eventos[i] \hspace{0.5mm} then  \hspace{0.5mm} res=(res*apuesta[c])*pago[c]  \hspace{0.5mm} else \hspace{0.5mm} res=(res*apuesta[s])*pago[s] fi),|\textit{evento}\vert - (i+1)) \\$
+        $def(\textit{eventos[i]}) \yLuego (\textit{eventos[i]} \y wp(res:=(res*apuesta[c])*pago[c],\funcionDecresiente < |\textit{evento}\vert - (i+1)) \o \neg eventos[i] \y wp(res=(res*apuesta[s])*pago[s],\funcionDecresiente < |\textit{evento}\vert - (i+1))) $ \\
+        $0 \leq i \leq |{\textit{eventos}}\vert \yLuego ((\textit{eventos}[i] \y def(res) \yLuego def(apuesta) \yLuego def(pago) \yLuego Q_{res*apuesta[c]*pago[c]}^{res}) \o (\neg\textit{eventos}[i] \y Q_{res*apuesta[s]*pago[s]}^{res}))$ \\
+        $0 \leq i \leq |{\textit{eventos}}\vert \yLuego ((\textit{eventos}[i]  \y |\textit{evento}\vert - (i+1)<\metavariable) \o (\neg\textit{eventos}[i] \y |\textit{evento}\vert - (i+1)<\metavariable))$ \\
+        $0 \leq i \leq |{\textit{eventos}}\vert yLuego (\textit{eventos}[i] \o \neg textit{eventos}[i] \y |\textit{evento}\vert - (i+1)<\metavariable) $\\
+        $0 \leq i \leq |{\textit{eventos}}\vert \y |\textit{evento}\vert - (i+1)<\metavariable \equiv wp $ \\\\
+        Ahora tenemos que ver si $I \y B \y \metavariable = \funcionDecresiente$ implica a la wp.
+        
+        $I \y B \y \metavariable = \funcionDecresiente \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y i < |{\textit{eventos}}\vert \y |{\textit{eventos}}\vert-i= \metavariable$ \\
+        $ \equiv 0 \leq i < |{\textit{eventos}}\vert \y |{\textit{eventos}}\vert-i= \metavariable $
+
+        $wp \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y |\textit{evento}\vert - (i+1)<\metavariable \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y |\textit{evento}\vert - i \leq \metavariable  $
+
+        $0 \leq i < |{\textit{eventos}}\vert \y |{\textit{eventos}}\vert-i= \metavariable \implica 0 \leq i \leq |{\textit{eventos}}\vert \y |\textit{evento}\vert - i \leq \metavariable$\\
+
+        Se ve que es una tautología, y entonces $\left\lbrace I \y B \y \metavariable = \funcionDecresiente \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace \funcionDecresiente < \metavariable \right\rbrace$ se cumple.
+
+        \item Veamos que se cumple 5 ($I \hspace{0.5mm} \y \hspace{0.5mm} \funcionDecresiente \leq 0  \hspace{2mm} \implica \hspace{2mm} \neg B$):\\
+        
+        $\funcionDecresiente \equiv |\textit{eventos}\vert - i$
+
+        $\neg B \equiv i \geq |{\textit{eventos}}\vert$
+
+        $I \hspace{0.5mm} \y \hspace{0.5mm} \funcionDecresiente \leq 0  \hspace{2mm} \equiv I \y  |\textit{eventos}\vert - i \leq 0 $
+        $\equiv I \y |\textit{eventos}\vert \leq i \equiv I \y \neg B$
+
+        Luego, $I \y \neg B \implica \neg B$
+
+        Entonces se puede observar que $I \hspace{0.5mm} \y \hspace{0.5mm} \funcionDecresiente \leq 0  \hspace{2mm} \implica \hspace{2mm} \neg B$ se cumple.
+        
+
+    \end{enumerate}
 \end{document}
