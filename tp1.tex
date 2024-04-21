@@ -12,7 +12,7 @@
 \fecha{\today}
 
 \materia{Algoritmos y Estructuras de Datos}
-\grupo{Grupo indeterminado}
+\grupo{Grupo JDDBVCNLUCVDVTZLNSIH}
 
 \integrante{Labastié, Gaspar}{660/23}{gaspilabastie@gmail.com}
 \integrante{Rugo, Julian}{1414/23}{julianrugo22@gmail.com}
@@ -452,38 +452,61 @@ se ganaría si se juega completamente solo. Se contempla que el evento \textit{T
         $I \y \neg B \equiv  i = |\textit{eventos}\vert \y 
         \textit{res}=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{\textit{\#apariciones}(\textit{eventos,T})}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{\textit{\#apariciones}(\textit{eventos,F})}$\\
         
-        Entonces se puede observar que $I \y \neg B \hspace{2mm} \implica \hspace{2mm} $ \postcondicion \hspace{1mm} se cumple.
+        Entonces se puede observar que $I \y \neg B \hspace{2mm} \implica \hspace{2mm} \postcondicion$  \hspace{1mm} se cumple.
 
         
 
         \item Veamos que se cumple 4 ($\left\lbrace I \y B \y \metavariable = \funcionDecresiente \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace \funcionDecresiente < \metavariable \right\rbrace$): \\
         
-        
         $I \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y \\
-        \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
-        (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$\\
-        $B \equiv i \leq |\textit{eventos}\vert$\\
+        \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} \textit{eventos}[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+        (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} \textit{eventos}[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$\\
+        $B \equiv i < |\textit{eventos}\vert$\\
        \funcionDecresiente= $|\textit{evento}\vert - i = \metavariable$\\
+       $I \y B \y \metavariable = \funcionDecresiente\\
+       \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y \\
+       \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} \textit{eventos}[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+       (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} \textit{eventos}[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}\y \\
+       i \leq |\textit{eventos}\vert \y |\textit{evento}\vert - i = \metavariable$ \\
+       $\equiv 0 \leq i < |{\textit{eventos}}\vert \y |\textit{evento}\vert - i = \metavariable \y \\
+       \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} \textit{eventos}[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+       (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} \textit{eventos}[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$\\
 
+       Primero hay que buscar la precondición más débil del ciclo: \\
+       $wp(i := i + 1,{\funcionDecresiente < \metavariable}) \equiv def(i+1) \y Q_{i+1}^{i} \equiv def(i) \y |\textit{evento}\vert - (i+1) < \metavariable
+       \equiv  def(i) \y |\textit{evento}\vert - i \leq \metavariable$ \\
 
-        Hay que hacer empezar buscando hay que buscar la precondición más débil del ciclo. \\
-        $wp(i := i + 1,{\funcionDecresiente < \metavariable}) \equiv def(i+1) \y Q_{i+1}^{i} \equiv fv < |\textit{evento}\vert - (i+1)$ \\
-        $wp((if \hspace{0.5mm} eventos[i] \hspace{0.5mm} then  \hspace{0.5mm} res=(res*apuesta[c])*pago[c]  \hspace{0.5mm} else \hspace{0.5mm} res=(res*apuesta[s])*pago[s] fi),|\textit{evento}\vert - (i+1)) \\$
-        $def(\textit{eventos[i]}) \yLuego (\textit{eventos[i]} \y wp(res:=(res*apuesta[c])*pago[c],\funcionDecresiente < |\textit{evento}\vert - (i+1)) \o \neg eventos[i] \y wp(res=(res*apuesta[s])*pago[s],\funcionDecresiente < |\textit{evento}\vert - (i+1))) $ \\
-        $0 \leq i \leq |{\textit{eventos}}\vert \yLuego ((\textit{eventos}[i] \y def(res) \yLuego def(apuesta) \yLuego def(pago) \yLuego Q_{res*apuesta[c]*pago[c]}^{res}) \o (\neg\textit{eventos}[i] \y Q_{res*apuesta[s]*pago[s]}^{res}))$ \\
-        $0 \leq i \leq |{\textit{eventos}}\vert \yLuego ((\textit{eventos}[i]  \y |\textit{evento}\vert - (i+1)<\metavariable) \o (\neg\textit{eventos}[i] \y |\textit{evento}\vert - (i+1)<\metavariable))$ \\
-        $0 \leq i \leq |{\textit{eventos}}\vert yLuego (\textit{eventos}[i] \o \neg textit{eventos}[i] \y |\textit{evento}\vert - (i+1)<\metavariable) $\\
-        $0 \leq i \leq |{\textit{eventos}}\vert \y |\textit{evento}\vert - (i+1)<\metavariable \equiv wp $ \\\\
-        Ahora tenemos que ver si $I \y B \y \metavariable = \funcionDecresiente$ implica a la wp.
-        
-        $I \y B \y \metavariable = \funcionDecresiente \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y i < |{\textit{eventos}}\vert \y |{\textit{eventos}}\vert-i= \metavariable$ \\
-        $ \equiv 0 \leq i < |{\textit{eventos}}\vert \y |{\textit{eventos}}\vert-i= \metavariable $
+       Luego tenemos la siguiente expresión:\\
+       $ wp((if \hspace{1mm}  \textit{eventos}[i] \hspace{1mm} then  \hspace{1mm} res=(res*\textit{$apuesta_{c}$})\textit{$pago_{c}$} \hspace{1mm} else \hspace{1mm} res=(res*\textit{$apuesta_{s}$})\textit{$pago_{s}$} \hspace{1mm} fi), Q)
+       $\\
+       $\equiv def(\textit{eventos}[i]) \yLuego 
+       ((\textit{eventos}[i] \y wp(\textit{res} := \textit{res}(\textit{$apuesta_{c}$}\textit{$pago_{c}$}), Q)) \lor 
+       (\neg\textit{eventos}[i] \y wp(\textit{res} := \textit{res}(\textit{$apuesta_{s}$}\textit{$pago_{s}$}), Q))) 
+       $\\
+       $\equiv 0 \leq i < |\textit{evento}\vert \yLuego 
+       ((\textit{eventos}[i] \y def(\textit{res}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})) \y (def(i) \y |\textit{evento}\vert - i \leq \metavariable)) \lor \\
+       (\neg\textit{eventos}[i] \y def(\textit{res}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})) \y (def(i) \y |\textit{evento}\vert - i \leq \metavariable)))
+       $\\
+       $\equiv 0 \leq i < |\textit{evento}\vert \yLuego 
+       ((\textit{eventos}[i] \y def(\textit{res}) \y def(\textit{$apuesta_{c}$}) \y def(\textit{$pago_{c}$}) \y def(i) \y |\textit{evento}\vert - i \leq \metavariable) \lor \\
+       (\neg\textit{eventos}[i] \y def(\textit{res}) \y def(\textit{$apuesta_{s}$}) \y def(\textit{$pago_{s}$}) \y def(i) \y |\textit{evento}\vert - i \leq \metavariable))
+       $\\
+       $\equiv 0 \leq i < |\textit{evento}\vert \yLuego 
+       ((\textit{eventos}[i] \y |\textit{evento}\vert - i \leq \metavariable) \lor
+       (\neg\textit{eventos}[i] \y |\textit{evento}\vert - i \leq \metavariable))
+       $\\
+       $\equiv  0 \leq i < |\textit{evento}\vert \yLuego ((\textit{eventos}[i] \lor \neg\textit{eventos}[i]) \y |\textit{evento}\vert - i \leq \metavariable)
+       $\\
+       $\equiv 0 \leq i < |\textit{evento}\vert \y |\textit{evento}\vert - i \leq \metavariable
+       $\\
 
-        $wp \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y |\textit{evento}\vert - (i+1)<\metavariable \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y |\textit{evento}\vert - i \leq \metavariable  $
-
-        $0 \leq i < |{\textit{eventos}}\vert \y |{\textit{eventos}}\vert-i= \metavariable \implica 0 \leq i \leq |{\textit{eventos}}\vert \y |\textit{evento}\vert - i \leq \metavariable$\\
-
-        Se ve que es una tautología, y entonces $\left\lbrace I \y B \y \metavariable = \funcionDecresiente \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace \funcionDecresiente < \metavariable \right\rbrace$ se cumple.
+       Finalmente, se puede observar: \\
+       $(0 \leq i < |{\textit{eventos}}\vert \y |\textit{evento}\vert - i = \metavariable \y \\
+       \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} \textit{eventos}[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
+       (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} \textit{eventos}[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}) \\
+       \implica (0 \leq i < |{\textit{eventos}}\vert \y |\textit{evento}\vert - i = \metavariable) \implica (0 \leq i < |\textit{evento}\vert \y |\textit{evento}\vert - i \leq \metavariable)
+       $\\
+       y por ende, $\left\lbrace I \y B \y \metavariable = \funcionDecresiente \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace \funcionDecresiente < \metavariable \right\rbrace$ se cumple.\\
 
         \item Veamos que se cumple 5 ($I \hspace{0.5mm} \y \hspace{0.5mm} \funcionDecresiente \leq 0  \hspace{2mm} \implica \hspace{2mm} \neg B$):\\
         
