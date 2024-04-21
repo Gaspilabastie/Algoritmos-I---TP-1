@@ -363,7 +363,6 @@ se ganaría si se juega completamente solo. Se contempla que el evento \textit{T
         \clearpage
 
         \item Veamos que se cumple 2 ($\left\lbrace I \y B \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace I \right\rbrace$):\\
-        
         $I \equiv 0 \leq i \leq |{\textit{eventos}}\vert \y \\
         \textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
         (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i -1})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)}$
@@ -376,22 +375,43 @@ se ganaría si se juega completamente solo. Se contempla que el evento \textit{T
         (\textit{res} = \textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i})(if \hspace{0.5mm} eventos[j] = \True \hspace{0.5mm} then \hspace{0.5mm} 1 \hspace{0.5mm} else \hspace{0.5mm} 0 \hspace{0.5mm} fi)}
         (\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i})(if \hspace{0.5mm} eventos[j] = \False \hspace{0.5mm} then  \hspace{0.5mm} 1  \hspace{0.5mm} else \hspace{0.5mm} 0 fi)})\\
         \equiv E1$\\
-
-        $ wp(if..., E1) \equiv def(eventos[i]) \y (( eventos[i] \y wp(res := res\textit{\apuestac}\textit{\pagoc}, E1)) v \\ (\neg eventos[i] \y wp(res := res\textit{\apuestas}\textit{pagos}, E1)))$ \\
+        
+        Entonces:\\
+        $ wp(if..., E1) \equiv def(eventos[i]) \y (( eventos[i] \y wp(res := res\textit{\apuestac}\textit{\pagoc}, E1)) \lor \\ (\neg eventos[i] \y wp(res := res\textit{\apuestas}\textit{pagos}, E1)))$ 
         
         $\equiv (0 \leq i \leq |\textit{eventos}\vert) \y \\
         ((eventos[i] \y \\ res\apuestac\pagoc=\textit{recurso}(\textit{\apuestac}\textit{\pagoc})^{(\sum_{j = 0}^{i})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{\apuestas}\textit{\pagos})^{(\sum_{j = 0}^{i})(if eventos[j] = \False then  1 else 0 fi)}) \\
         \lor \\ (\neg eventos[i] \y \\ res\apuestas\pagos=\textit{recurso}(\textit{\apuestac}\textit{\pagoc})^{(\sum_{j = 0}^{i})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{\apuestas}\textit{\pagos})^{(\sum_{j = 0}^{i})(if eventos[j] = \False then 1 else 0 fi)})\\
         ) $
         
-        
-        $\equiv (0 \leq i \leq |\textit{eventos}\vert) \y \\
+        Luego, en la ecuacion:\\
+        $res\apuestac\pagoc=\textit{recurso}(\textit{\apuestac}\textit{\pagoc})^{(\sum_{j = 0}^{i})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{\apuestas}\textit{\pagos})^{(\sum_{j = 0}^{i})(if eventos[j] = \False then  1 else 0 fi)}$\\
+        se puede pasar dividiendo el término $\apuestac\pagoc$ dividiendo, ya que tanto \textit{$apuesta_{c}$} como \textit{$pago_{c}$} son mayores a 0 por lo pedido en el requiere.\\
+        Lo mismo ocurre en la ecuacion:\\
+        $res\apuestas\pagos=\textit{recurso}(\textit{\apuestac}\textit{\pagoc})^{(\sum_{j = 0}^{i})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{\apuestas}\textit{\pagos})^{(\sum_{j = 0}^{i})(if eventos[j] = \False then 1 else 0 fi)}$
+        donde se puede pasar dividiendo el término $\apuestas\pagos$ dividiendo por la misma razón.\\
+
+        De esta forma, se obtiene la siguiente expresión:\\
+        $wp(if..., E1) \equiv (0 \leq i \leq |\textit{eventos}\vert) \y \\
         ((eventos[i] \y \\ res=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i})(if eventos[j] = \False then  1 else 0 fi)}) 
         \lor \\ (\neg eventos[i] \y \\ res=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \False then 1 else 0 fi)})
         ) 
-        $
+        $\\
 
-        $\equiv (0 \leq i \leq |\textit{eventos}\vert) \y \\
+        Por otro lado, tambien cabe destacar que en las ecuaciones:\\
+        $res=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i})(if eventos[j] = \False then  1 else 0 fi)}$ 
+        y\\
+        $res=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \False then 1 else 0 fi)}$\\
+        se pueden reemplazar\\ 
+        $(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i})(if eventos[j] = \False then  1 else 0 fi)}$ por 
+        $(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \False then  1 else 0 fi)}$ 
+        y\\
+        $(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i})(if eventos[j] = \True  then 1 else 0  fi)}$ por
+        $(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \True  then 1 else 0  fi)}$\\
+        respectivamente, ya que en que ambos casos, el último elemento es igual a 0 y por ende no afecta al resultado de la sumatoria. \\
+        
+        De ahí que se obtiene la siguiente expresión:\\
+        $wp(if..., E1) \equiv (0 \leq i \leq |\textit{eventos}\vert) \y \\
         ((eventos[i] \y \\ res=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \False then  1 else 0 fi)}) 
         \lor \\ (\neg eventos[i] \y \\ res=\textit{recurso}(\textit{$apuesta_{c}$}\textit{$pago_{c}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \True  then 1 else 0  fi)}(\textit{$apuesta_{s}$}\textit{$pago_{s}$})^{(\sum_{j = 0}^{i-1})(if eventos[j] = \False then 1 else 0 fi)})
         ) 
@@ -410,6 +430,8 @@ se ganaría si se juega completamente solo. Se contempla que el evento \textit{T
         $\equiv I $
 
         Entonces se puede observar que $\left\lbrace I \y B \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace I \right\rbrace$ \hspace{1mm} se cumple.
+
+        \clearpage
 
         \item Veamos que se cumple 3 ($I \y \neg B \hspace{2mm} \implica \hspace{2mm} $ \postcondicion):\\
         
@@ -432,7 +454,7 @@ se ganaría si se juega completamente solo. Se contempla que el evento \textit{T
         
         Entonces se puede observar que $I \y \neg B \hspace{2mm} \implica \hspace{2mm} $ \postcondicion \hspace{1mm} se cumple.
 
-        \clearpage
+        
 
         \item Veamos que se cumple 4 ($\left\lbrace I \y B \y \metavariable = \funcionDecresiente \right\rbrace \hspace{2mm} S \hspace{2mm} \left\lbrace \funcionDecresiente < \metavariable \right\rbrace$): \\
         
