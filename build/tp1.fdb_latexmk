@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1713720341.56864 "d:/FRAN/Educacion/UBA/Algo_2/Algoritmos-I---TP-1/tp1.tex" "build/tp1.pdf" "tp1" 1713720342.38493 0
+["pdflatex"] 1713741516.005 "d:/FRAN/Educacion/UBA/Algo_2/Algoritmos-I---TP-1/tp1.tex" "build/tp1.pdf" "tp1" 1713741517.13184 0
   "AEDmacros.tex" 1713638946 5631 b5cf5a98e67fe272045f3d82b1b77c2d ""
   "C:/Users/franv/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1712843764 81068 299f700eb05b1217173e62b88b513bd0 ""
   "C:/Users/franv/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1000.pk" 1712428449 11548 838dc0463b3cb7d615aa2af3d7b0b2d8 ""
@@ -93,12 +93,12 @@
   "C:/Users/franv/AppData/Local/Programs/MiKTeX/tex/latex/listings/lstmisc.sty" 1710669304 77023 48b5adf5086dac991587916788887607 ""
   "C:/Users/franv/AppData/Local/Programs/MiKTeX/tex/latex/listings/lstpatch.sty" 1710669304 353 9024412f43e92cd5b21fe9ded82d0610 ""
   "C:/Users/franv/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1700127522 55487 80a65caedd3722f4c20a14a69e785d8f ""
-  "build/tp1.aux" 1713720342 544 902beb4bb41a5ab5abd22680a6cdbda2 "pdflatex"
+  "build/tp1.aux" 1713741516 544 902beb4bb41a5ab5abd22680a6cdbda2 "pdflatex"
   "caratula.sty" 1693401348 11654 b7d6c7f15260a7fe039ae1559c1c577c ""
-  "d:/FRAN/Educacion/UBA/Algo_2/Algoritmos-I---TP-1/tp1.tex" 1713720341 43078 55caec45a60479a217f39ba4f8083554 ""
+  "d:/FRAN/Educacion/UBA/Algo_2/Algoritmos-I---TP-1/tp1.tex" 1713741515 43059 5c2df5fa210dc110ff9776d71ebeb9b9 ""
   "logo_dc.jpg" 1693401348 128041 860ed529f2e122b3922f6ce21e3273f1 ""
   "logo_uba.jpg" 1693401349 229119 10f3a63be47e1e95e44f30008ec3af50 ""
-  "tp1.tex" 1713720341 43078 55caec45a60479a217f39ba4f8083554 ""
+  "tp1.tex" 1713741515 43059 5c2df5fa210dc110ff9776d71ebeb9b9 ""
   (generated)
   "build/tp1.aux"
   "build/tp1.log"
